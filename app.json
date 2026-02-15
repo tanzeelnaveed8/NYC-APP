@@ -20,7 +20,8 @@
         "googleMapsApiKey": "AIzaSyAy6Un1PzgY5BgUNwgbch9dES5yE9En96I"
       },
       "infoPlist": {
-        "NSLocationWhenInUseUsageDescription": "We need your location to show your current precinct on the map."
+        "NSLocationWhenInUseUsageDescription": "We need your location to show your current precinct on the map.",
+        "ITSAppUsesNonExemptEncryption": false
       }
     },
     "android": {
@@ -37,7 +38,9 @@
       },
       "permissions": [
         "ACCESS_FINE_LOCATION",
-        "ACCESS_COARSE_LOCATION"
+        "ACCESS_COARSE_LOCATION",
+        "android.permission.ACCESS_COARSE_LOCATION",
+        "android.permission.ACCESS_FINE_LOCATION"
       ]
     },
     "web": {
@@ -47,7 +50,15 @@
       "expo-router",
       "expo-sqlite",
       "expo-font",
-      "expo-location"
-    ]
+      "expo-location",
+      "expo-system-ui"
+    ],
+    "extra": {
+      "router": {},
+      "eas": {
+        "projectId": "9561807b-dfe0-43ba-b53d-d6e01013f69f"
+      }
+    },
+    "owner": "tanzeelnaveed"
   }
 }
