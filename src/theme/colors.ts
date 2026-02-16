@@ -47,21 +47,21 @@ export const Colors = {
     highlight: RED,
     highlightBg: 'rgba(211,47,47,0.10)',
 
-    // Borough colors - consistent blue
-    boroughManhattan: DBLUE,
-    boroughBrooklyn: DBLUE,
-    boroughBronx: DBLUE,
-    boroughQueens: DBLUE,
-    boroughStatenIsland: DBLUE,
+    // Borough colors
+    boroughManhattan: '#D32F2F',
+    boroughBrooklyn: '#D32F2F',
+    boroughBronx: '#D32F2F',
+    boroughQueens: '#D32F2F',
+    boroughStatenIsland: '#D32F2F',
 
-    // Map
-    mapOverlayFill: 'rgba(27,58,92,0.10)',
-    mapOverlayStroke: DBLUE,
-    mapSelectedFill: 'rgba(211,47,47,0.15)',
-    mapSelectedStroke: RED,
-    mapSectorFill: 'rgba(255,152,0,0.12)',
-    mapSectorStroke: '#FF9800',
-    mapSectorSelectedFill: 'rgba(255,109,0,0.25)',
+    // Map — red precincts
+    mapOverlayFill: 'rgba(211,47,47,0.18)',
+    mapOverlayStroke: '#D32F2F',
+    mapSelectedFill: 'rgba(211,47,47,0.40)',
+    mapSelectedStroke: '#B71C1C',
+    mapSectorFill: 'rgba(255,167,38,0.22)',
+    mapSectorStroke: '#FFA726',
+    mapSectorSelectedFill: 'rgba(255,111,0,0.38)',
     mapSectorSelectedStroke: '#FF6D00',
 
     // Tab & Nav
@@ -125,21 +125,21 @@ export const Colors = {
     highlight: '#EF5350',
     highlightBg: 'rgba(239,83,80,0.15)',
 
-    // Borough colors - consistent blue
-    boroughManhattan: '#82B1FF',
-    boroughBrooklyn: '#82B1FF',
-    boroughBronx: '#82B1FF',
-    boroughQueens: '#82B1FF',
-    boroughStatenIsland: '#82B1FF',
+    // Borough colors
+    boroughManhattan: '#EF5350',
+    boroughBrooklyn: '#EF5350',
+    boroughBronx: '#EF5350',
+    boroughQueens: '#EF5350',
+    boroughStatenIsland: '#EF5350',
 
-    // Map
-    mapOverlayFill: 'rgba(130,177,255,0.12)',
-    mapOverlayStroke: '#82B1FF',
-    mapSelectedFill: 'rgba(239,83,80,0.20)',
-    mapSelectedStroke: '#EF5350',
-    mapSectorFill: 'rgba(255,183,77,0.15)',
+    // Map — red precincts
+    mapOverlayFill: 'rgba(239,83,80,0.18)',
+    mapOverlayStroke: '#EF5350',
+    mapSelectedFill: 'rgba(239,83,80,0.40)',
+    mapSelectedStroke: '#D32F2F',
+    mapSectorFill: 'rgba(255,183,77,0.22)',
     mapSectorStroke: '#FFB74D',
-    mapSectorSelectedFill: 'rgba(255,183,77,0.30)',
+    mapSectorSelectedFill: 'rgba(255,167,38,0.42)',
     mapSectorSelectedStroke: '#FFA726',
 
     // Tab & Nav

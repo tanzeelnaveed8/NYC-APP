@@ -50,65 +50,75 @@ export function PrecinctInfoSheet({ precinct, sector, reverseAddress, searchedAd
         <View style={[styles.handle, { backgroundColor: colors.outline }]} />
       </View>
 
-      {/* Header */}
+      {/* Header row */}
       <View style={styles.header}>
         <View style={styles.headerLeft}>
-          <View style={styles.nameRow}>
-            <Text style={[styles.precinctName, { color: colors.textPrimary }]}>
-              {precinct.name}
-            </Text>
-            {onToggleFavorite && (
-              <IconButton
-                icon={isFavorited ? 'star' : 'star-outline'}
-                iconColor={isFavorited ? '#2979FF' : colors.textTertiary}
-                size={22}
-                onPress={onToggleFavorite}
-                style={{ margin: 0 }}
-              />
-            )}
-          </View>
+          <Text style={[styles.precinctName, { color: colors.textPrimary }]}>
+            {precinct.name}
+          </Text>
           <View style={styles.badges}>
             <View style={[styles.badge, { backgroundColor: `${boroughColor}18` }]}>
               <Text style={[styles.badgeText, { color: boroughColor }]}>{precinct.borough}</Text>
             </View>
-            <View style={[styles.badge, { backgroundColor: `${colors.accent}15` }]}>
-              <Text style={[styles.badgeText, { color: colors.accent }]}>#{precinct.precinctNum}</Text>
-            </View>
-            {sector && (
-              <View style={[styles.badge, { backgroundColor: colors.highlightBg }]}>
-                <Text style={[styles.badgeText, { color: colors.highlight }]}>Sector {sector.sectorId}</Text>
-              </View>
-            )}
           </View>
         </View>
-        {onClose && (
-          <IconButton icon="close" iconColor={colors.textTertiary} size={20} onPress={onClose} style={{ margin: 0 }} />
-        )}
+        <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+          {onToggleFavorite && (
+            <IconButton
+              icon={isFavorited ? 'star' : 'star-outline'}
+              iconColor={isFavorited ? '#2979FF' : colors.textTertiary}
+              size={22}
+              onPress={onToggleFavorite}
+              style={{ margin: 0 }}
+            />
+          )}
+          {onClose && (
+            <IconButton icon="close" iconColor={colors.textTertiary} size={20} onPress={onClose} style={{ margin: 0 }} />
+          )}
+        </View>
       </View>
 
-      {/* Searched address */}
+      {/* Searched address banner */}
       {searchedAddress && (
         <View style={[styles.searchedAddressBox, { backgroundColor: `${colors.accent}10`, borderColor: `${colors.accent}25` }]}>
           <MaterialCommunityIcons name="map-search-outline" size={16} color={colors.accent} />
-          <Text style={[styles.searchedAddressText, { color: colors.textPrimary }]} numberOfLines={2}>
-            {searchedAddress}
-          </Text>
+          <View style={{ flex: 1 }}>
+            <Text style={[styles.searchedAddressLabel, { color: colors.accent }]}>Searched Address</Text>
+            <Text style={[styles.searchedAddressText, { color: colors.textPrimary }]} numberOfLines={2}>
+              {searchedAddress}
+            </Text>
+          </View>
         </View>
       )}
 
-      {/* Labeled Precinct & Sector */}
+      {/* Precinct & Sector info cards */}
       <View style={styles.labeledInfoSection}>
-        <View style={[styles.labeledInfoCard, { backgroundColor: `${colors.accent}10`, borderColor: `${colors.accent}20` }]}>
-          <Text style={[styles.labeledInfoLabel, { color: colors.textTertiary }]}>Precinct</Text>
-          <Text style={[styles.labeledInfoValue, { color: colors.accent }]}>{precinct.precinctNum}</Text>
+        {/* Precinct card */}
+        <View style={[styles.labeledInfoCard, { backgroundColor: 'rgba(244,67,54,0.08)', borderColor: 'rgba(244,67,54,0.20)' }]}>
+          <View style={[styles.labeledInfoIconRow]}>
+            <MaterialCommunityIcons name="shield-outline" size={16} color="#E53935" />
+            <Text style={[styles.labeledInfoLabel, { color: colors.textTertiary }]}>PRECINCT</Text>
+          </View>
+          <Text style={[styles.labeledInfoValue, { color: '#E53935' }]}>{precinct.precinctNum}</Text>
+          <Text style={[styles.labeledInfoName, { color: colors.textSecondary }]} numberOfLines={1}>
+            {precinct.name}
+          </Text>
         </View>
+
+        {/* Sector card */}
         <View style={[
           styles.labeledInfoCard,
-          { backgroundColor: sector ? 'rgba(255,152,0,0.10)' : `${colors.outline}20`, borderColor: sector ? 'rgba(255,152,0,0.25)' : `${colors.outline}30` },
+          { backgroundColor: sector ? 'rgba(255,152,0,0.08)' : `${colors.outline}15`, borderColor: sector ? 'rgba(255,152,0,0.20)' : `${colors.outline}25` },
         ]}>
-          <Text style={[styles.labeledInfoLabel, { color: colors.textTertiary }]}>Sector</Text>
-          <Text style={[styles.labeledInfoValue, { color: sector ? '#FF9800' : colors.textTertiary }]}>
+          <View style={styles.labeledInfoIconRow}>
+            <MaterialCommunityIcons name="vector-square" size={16} color={sector ? '#F57C00' : colors.textTertiary} />
+            <Text style={[styles.labeledInfoLabel, { color: colors.textTertiary }]}>SECTOR</Text>
+          </View>
+          <Text style={[styles.labeledInfoValue, { color: sector ? '#F57C00' : colors.textTertiary }]}>
             {sector ? sector.sectorId : '—'}
+          </Text>
+          <Text style={[styles.labeledInfoName, { color: colors.textTertiary }]} numberOfLines={1}>
+            {sector ? `Precinct ${sector.precinctNum}` : 'Not identified'}
           </Text>
         </View>
       </View>
@@ -137,27 +147,9 @@ export function PrecinctInfoSheet({ precinct, sector, reverseAddress, searchedAd
 
       {/* Quick Actions */}
       <View style={styles.actions}>
-        <ActionButton
-          icon="phone"
-          label="Call"
-          color="#2979FF"
-          bgColor="rgba(41,121,255,0.1)"
-          onPress={handleCall}
-        />
-        <ActionButton
-          icon="navigation-variant"
-          label="Navigate"
-          color="#2979FF"
-          bgColor="rgba(41,121,255,0.1)"
-          onPress={handleNavigate}
-        />
-        <ActionButton
-          icon="content-copy"
-          label="Copy"
-          color="#2979FF"
-          bgColor="rgba(41,121,255,0.1)"
-          onPress={handleCopy}
-        />
+        <ActionButton icon="phone" label="Call" color="#2979FF" bgColor="rgba(41,121,255,0.1)" onPress={handleCall} />
+        <ActionButton icon="navigation-variant" label="Navigate" color="#2979FF" bgColor="rgba(41,121,255,0.1)" onPress={handleNavigate} />
+        <ActionButton icon="content-copy" label="Copy" color="#2979FF" bgColor="rgba(41,121,255,0.1)" onPress={handleCopy} />
       </View>
 
       <Snackbar visible={copySnack} onDismiss={() => setCopySnack(false)} duration={1500}>
@@ -209,20 +201,14 @@ const styles = StyleSheet.create({
     alignItems: 'flex-start',
   },
   headerLeft: { flex: 1 },
-  nameRow: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-  },
   precinctName: {
     fontSize: 20,
     fontWeight: '800',
-    flex: 1,
   },
   badges: {
     flexDirection: 'row',
     gap: 6,
-    marginTop: 6,
+    marginTop: 4,
     flexWrap: 'wrap',
   },
   badge: {
@@ -236,17 +222,23 @@ const styles = StyleSheet.create({
   },
   searchedAddressBox: {
     flexDirection: 'row',
-    alignItems: 'center',
-    gap: 8,
-    padding: 10,
-    borderRadius: 10,
+    alignItems: 'flex-start',
+    gap: 10,
+    padding: 12,
+    borderRadius: 12,
     marginTop: 10,
     borderWidth: 1,
   },
+  searchedAddressLabel: {
+    fontSize: 10,
+    fontWeight: '700',
+    letterSpacing: 0.5,
+    textTransform: 'uppercase',
+    marginBottom: 2,
+  },
   searchedAddressText: {
-    fontSize: 13,
+    fontSize: 14,
     fontWeight: '600',
-    flex: 1,
   },
   labeledInfoSection: {
     flexDirection: 'row',
@@ -256,9 +248,16 @@ const styles = StyleSheet.create({
   labeledInfoCard: {
     flex: 1,
     alignItems: 'center',
-    paddingVertical: 10,
-    borderRadius: 12,
+    paddingVertical: 12,
+    paddingHorizontal: 8,
+    borderRadius: 14,
     borderWidth: 1,
+  },
+  labeledInfoIconRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 4,
+    marginBottom: 4,
   },
   labeledInfoLabel: {
     fontSize: 10,
@@ -267,8 +266,13 @@ const styles = StyleSheet.create({
     textTransform: 'uppercase',
   },
   labeledInfoValue: {
-    fontSize: 22,
+    fontSize: 26,
     fontWeight: '900',
+    marginTop: 2,
+  },
+  labeledInfoName: {
+    fontSize: 11,
+    fontWeight: '600',
     marginTop: 2,
   },
   reverseBox: {

@@ -7,7 +7,7 @@ import { router } from 'expo-router';
 import * as Location from 'expo-location';
 import { useAppContext } from '../../src/context/AppContext';
 import { Colors, getBoroughColor } from '../../src/theme/colors';
-import { getAllPrecincts, findPrecinctAtLocation, findSectorAtLocation } from '../../src/db/repositories/precinctRepository';
+import { getAllPrecincts, findPrecinctAtLocation, findSectorAtLocation, findNearestPrecinct } from '../../src/db/repositories/precinctRepository';
 import { getRecentSearches, addRecentSearch, clearRecentSearches } from '../../src/db/repositories/searchRepository';
 import type { Precinct, RecentSearch } from '../../src/models';
 
@@ -74,26 +74,62 @@ export default function SearchScreen() {
     Keyboard.dismiss();
     setGeocoding(true);
     try {
-      const geocodeResults = await Location.geocodeAsync(query.trim() + ', New York City, NY');
-      if (!geocodeResults || geocodeResults.length === 0) {
-        Alert.alert('Address Not Found', 'Could not locate that address. Try a more specific NYC address.');
+      const searchQuery = query.trim();
+      let latitude: number | null = null;
+      let longitude: number | null = null;
+
+      // Method 1: Use free Nominatim (OpenStreetMap) geocoding API — most reliable
+      try {
+        const encoded = encodeURIComponent(searchQuery + ', New York City, NY, USA');
+        const url = `https://nominatim.openstreetmap.org/search?q=${encoded}&format=json&limit=1&countrycodes=us`;
+        const response = await fetch(url, {
+          headers: { 'User-Agent': 'NYCPrecinctApp/1.0' },
+        });
+        const data = await response.json();
+        if (data && data.length > 0) {
+          latitude = parseFloat(data[0].lat);
+          longitude = parseFloat(data[0].lon);
+        }
+      } catch {}
+
+      // Method 2: Fallback to native expo-location geocoder
+      if (latitude === null || longitude === null) {
+        try {
+          const { status } = await Location.requestForegroundPermissionsAsync();
+          if (status === 'granted') {
+            const nativeResults = await Location.geocodeAsync(searchQuery + ', New York, NY');
+            if (nativeResults && nativeResults.length > 0) {
+              latitude = nativeResults[0].latitude;
+              longitude = nativeResults[0].longitude;
+            }
+          }
+        } catch {}
+      }
+
+      if (latitude === null || longitude === null) {
+        Alert.alert('Address Not Found', 'Could not locate that address. Try a more specific NYC address (e.g. "123 Broadway, Manhattan").');
         setGeocoding(false);
         return;
       }
-      const { latitude, longitude } = geocodeResults[0];
+
       const point = { latitude, longitude };
-      const precinct = await findPrecinctAtLocation(point);
+
+      // Try exact point-in-polygon first, then fall back to nearest precinct
+      let precinct = await findPrecinctAtLocation(point);
+      if (!precinct) {
+        precinct = await findNearestPrecinct(point);
+      }
       const sector = await findSectorAtLocation(point);
 
       if (!precinct) {
-        Alert.alert('Outside NYC', 'This address does not appear to be within an NYC precinct boundary.');
+        Alert.alert('Outside NYC', 'This address does not appear to be within an NYC precinct boundary. Try a more specific address.');
         setGeocoding(false);
         return;
       }
 
       await addRecentSearch({
-        queryText: query.trim(),
-        displayAddress: query.trim(),
+        queryText: searchQuery,
+        displayAddress: searchQuery,
         latitude,
         longitude,
         timestamp: Date.now(),
@@ -103,12 +139,12 @@ export default function SearchScreen() {
 
       setSelectedPrecinct(precinct);
       setSelectedSector(sector);
-      setSearchedAddress(query.trim());
+      setSearchedAddress(searchQuery);
       setSearchedLocation(point);
       setGeocoding(false);
       router.navigate('/(tabs)/map');
-    } catch {
-      Alert.alert('Error', 'Failed to search address. Please check your connection and try again.');
+    } catch (err: any) {
+      Alert.alert('Error', 'Failed to search address. Please check your internet connection and try again.');
       setGeocoding(false);
     }
   }, [query, geocoding, setSelectedPrecinct, setSelectedSector, setSearchedAddress, setSearchedLocation]);

@@ -64,12 +64,14 @@ export default function MapScreen() {
     }
   }, [selectedPrecinct]);
 
-  // Auto-enable sector view when address search result arrives
+  // Auto-enable sector view when a precinct is selected
   useEffect(() => {
-    if (searchedAddress && selectedPrecinct) {
+    if (selectedPrecinct) {
       setShowSectors(true);
+    } else {
+      setShowSectors(false);
     }
-  }, [searchedAddress, selectedPrecinct]);
+  }, [selectedPrecinct]);
 
   // Animate to searched location or selected precinct
   useEffect(() => {
@@ -167,31 +169,34 @@ export default function MapScreen() {
 
   const mapTypeValue = mapType === 'satellite' ? 'satellite' : mapType === 'terrain' ? 'terrain' : 'standard';
 
-  // Polygon overlays
+  // Polygon overlays — red precincts (hide selected precinct when sectors are visible)
   const precinctPolygons = useMemo(() => {
     if (!boundaryVisible) return null;
+    const hideCurrent = showSectors && sectors.length > 0;
     return precincts.map((precinct) => {
       try {
         const geometry = JSON.parse(precinct.boundaryJson);
         const rings = getPolygonRings(geometry);
         const isSelected = selectedPrecinct?.precinctNum === precinct.precinctNum;
-        const boroughColor = getBoroughColor(precinct.borough, colors);
+        if (isSelected && hideCurrent) return null;
         return rings.map((ring, i) => (
           <Polygon
             key={`p-${precinct.precinctNum}-${i}`}
             coordinates={ring}
-            strokeColor={isSelected ? colors.mapSelectedStroke : boroughColor}
-            fillColor={isSelected ? colors.mapSelectedFill : `${boroughColor}20`}
-            strokeWidth={isSelected ? 3 : 1.5}
+            strokeColor={isSelected ? colors.mapSelectedStroke : colors.mapOverlayStroke}
+            fillColor={isSelected ? colors.mapSelectedFill : colors.mapOverlayFill}
+            strokeWidth={isSelected ? 3.5 : 2}
             tappable={false}
           />
         ));
       } catch { return null; }
     });
-  }, [precincts, boundaryVisible, selectedPrecinct, colors]);
+  }, [precincts, boundaryVisible, selectedPrecinct, showSectors, sectors, colors]);
 
+  // Sector overlays — warm orange/amber, dashed borders
   const sectorPolygons = useMemo(() => {
     if (!boundaryVisible || !selectedPrecinct || !showSectors) return null;
+    if (sectors.length === 0) return null;
     return sectors.map((sector) => {
       try {
         const geometry = JSON.parse(sector.boundaryJson);
@@ -203,8 +208,8 @@ export default function MapScreen() {
             coordinates={ring}
             strokeColor={isSelected ? colors.mapSectorSelectedStroke : colors.mapSectorStroke}
             fillColor={isSelected ? colors.mapSectorSelectedFill : colors.mapSectorFill}
-            strokeWidth={isSelected ? 3 : 1.5}
-            lineDashPattern={[6, 4]}
+            strokeWidth={isSelected ? 3.5 : 2}
+            lineDashPattern={isSelected ? undefined : [8, 4]}
             tappable={false}
           />
         ));
@@ -242,8 +247,8 @@ export default function MapScreen() {
         onPress={handleMyLocation}
       />
 
-      {/* Boundary Toggle */}
-      {boundaryVisible && (
+      {/* Boundary Toggle — only visible when a precinct is selected */}
+      {boundaryVisible && selectedPrecinct && (
         <View style={[styles.toggleCard, { top: insets.top + 12, backgroundColor: colors.surface }]}>
           <TouchableOpacity
             style={[

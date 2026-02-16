@@ -82,6 +82,30 @@ export async function findSectorAtLocation(point: LatLng): Promise<Sector | null
   return null;
 }
 
+/**
+ * Find the nearest precinct by centroid distance (fallback when point-in-polygon fails).
+ * Only returns a result within ~3km to avoid matching far-away precincts.
+ */
+export async function findNearestPrecinct(point: LatLng): Promise<Precinct | null> {
+  const db = await getDatabase();
+  const precincts = await db.getAllAsync<Precinct>('SELECT * FROM precincts');
+
+  let nearest: Precinct | null = null;
+  let minDist = Infinity;
+
+  for (const p of precincts) {
+    const dist = distanceTo(point, { latitude: p.centroidLat, longitude: p.centroidLng });
+    if (dist < minDist) {
+      minDist = dist;
+      nearest = p;
+    }
+  }
+
+  // ~0.0009 squared distance ≈ ~3km — reject if too far from any precinct
+  if (minDist > 0.0009) return null;
+  return nearest;
+}
+
 export async function insertPrecinct(p: Precinct): Promise<void> {
   const db = await getDatabase();
   await db.runAsync(

@@ -1,8 +1,8 @@
 import { insertPrecinct, insertSector } from '../db/repositories/precinctRepository';
 import { insertLawCategory, insertLawEntry, updateCategoryCount, getLawStats } from '../db/repositories/lawRepository';
 import { insertSquad, insertRdoSchedule } from '../db/repositories/calendarRepository';
-import { setDataVersion, isInitialLoadComplete } from '../db/repositories/syncRepository';
-import { resetDatabase } from '../db/database';
+import { setDataVersion, getDataVersion, isInitialLoadComplete } from '../db/repositories/syncRepository';
+import { resetDatabase, getDatabase } from '../db/database';
 import { computeCentroid, computeBoundingBox } from '../utils/geo';
 import type { Precinct, Sector, LawCategory, Squad, RdoSchedule } from '../models';
 
@@ -24,10 +24,11 @@ export async function performInitialDataLoad(
     // Verify law data actually exists
     const stats = await getLawStats();
     if (stats.categories > 0 && stats.entries > 0) {
+      // Upgrade sectors if needed (old installs had only 6 sectors)
+      await upgradeSectorsIfNeeded();
       return;
     }
     // Data versions exist but tables are empty - reset and reload
-    // Data versions exist but tables empty, resetting
     await resetDatabase();
   }
 
@@ -44,17 +45,46 @@ export async function performInitialDataLoad(
     // Stage 3: Seed precinct boundaries (this is placeholder - actual GeoJSON loading)
     onProgress?.({ stage: 'Loading precinct boundaries...', progress: 0.4 });
     await seedPrecinctData();
-    await setDataVersion('precincts', '1.0.0');
+    await setDataVersion('precincts', PRECINCT_VERSION);
 
     // Stage 4: Seed sector boundaries
     onProgress?.({ stage: 'Loading sector boundaries...', progress: 0.7 });
     await seedSectorData();
-    await setDataVersion('sectors', '1.0.0');
+    await setDataVersion('sectors', SECTOR_VERSION);
 
     onProgress?.({ stage: 'Complete!', progress: 1.0 });
   } catch (error) {
     console.error('Initial data load failed:', error);
     throw error;
+  }
+}
+
+// ─── Sector Upgrade ─────────────────────────────────────────────────────────
+
+const PRECINCT_VERSION = '2.0.0';
+const SECTOR_VERSION = '2.0.0';
+
+async function upgradeSectorsIfNeeded(): Promise<void> {
+  try {
+    // Upgrade precincts if shapes changed
+    const precinctVer = await getDataVersion('precincts');
+    if (!precinctVer || precinctVer.version < PRECINCT_VERSION) {
+      const db = await getDatabase();
+      await db.runAsync('DELETE FROM precincts');
+      await seedPrecinctData();
+      await setDataVersion('precincts', PRECINCT_VERSION);
+    }
+
+    // Upgrade sectors
+    const sectorVer = await getDataVersion('sectors');
+    if (!sectorVer || sectorVer.version < SECTOR_VERSION) {
+      const db = await getDatabase();
+      await db.runAsync('DELETE FROM sectors');
+      await seedSectorData();
+      await setDataVersion('sectors', SECTOR_VERSION);
+    }
+  } catch (err) {
+    console.warn('[DataLoader] Data upgrade failed:', err);
   }
 }
 
@@ -177,33 +207,80 @@ async function seedLawLibrary(): Promise<void> {
 
 async function seedPrecinctData(): Promise<void> {
   const precincts: Precinct[] = [
-    { precinctNum: 1, name: '1st Precinct', address: '16 Ericsson Place', phone: '(212) 334-0611', borough: 'Manhattan', boundaryJson: '{"type":"Polygon","coordinates":[[[-74.013,40.709],[-74.009,40.715],[-74.002,40.716],[-73.998,40.711],[-74.002,40.707],[-74.008,40.706],[-74.013,40.709]]]}', centroidLat: 40.711, centroidLng: -74.006, boundingBoxJson: '[40.706,-74.013,40.716,-73.998]' },
-    { precinctNum: 5, name: '5th Precinct', address: '19 Elizabeth Street', phone: '(212) 334-0711', borough: 'Manhattan', boundaryJson: '{"type":"Polygon","coordinates":[[[-73.999,40.716],[-73.995,40.721],[-73.990,40.720],[-73.992,40.714],[-73.999,40.716]]]}', centroidLat: 40.718, centroidLng: -73.994, boundingBoxJson: '[40.714,-73.999,40.721,-73.990]' },
-    { precinctNum: 6, name: '6th Precinct', address: '233 West 10th Street', phone: '(212) 741-4811', borough: 'Manhattan', boundaryJson: '{"type":"Polygon","coordinates":[[[-74.007,40.730],[-74.001,40.737],[-73.996,40.735],[-73.999,40.728],[-74.007,40.730]]]}', centroidLat: 40.732, centroidLng: -74.001, boundingBoxJson: '[40.728,-74.007,40.737,-73.996]' },
-    { precinctNum: 7, name: '7th Precinct', address: '19 1/2 Pitt Street', phone: '(212) 477-7311', borough: 'Manhattan', boundaryJson: '{"type":"Polygon","coordinates":[[[-73.990,40.714],[-73.985,40.720],[-73.978,40.718],[-73.980,40.712],[-73.990,40.714]]]}', centroidLat: 40.716, centroidLng: -73.983, boundingBoxJson: '[40.712,-73.990,40.720,-73.978]' },
-    { precinctNum: 9, name: '9th Precinct', address: '321 East 5th Street', phone: '(212) 477-7811', borough: 'Manhattan', boundaryJson: '{"type":"Polygon","coordinates":[[[-73.992,40.722],[-73.986,40.730],[-73.979,40.728],[-73.982,40.720],[-73.992,40.722]]]}', centroidLat: 40.725, centroidLng: -73.985, boundingBoxJson: '[40.720,-73.992,40.730,-73.979]' },
-    { precinctNum: 10, name: '10th Precinct', address: '230 West 20th Street', phone: '(212) 741-8211', borough: 'Manhattan', boundaryJson: '{"type":"Polygon","coordinates":[[[-74.005,40.740],[-73.998,40.748],[-73.993,40.746],[-73.997,40.738],[-74.005,40.740]]]}', centroidLat: 40.743, centroidLng: -73.998, boundingBoxJson: '[40.738,-74.005,40.748,-73.993]' },
-    { precinctNum: 13, name: '13th Precinct', address: '230 East 21st Street', phone: '(212) 477-7411', borough: 'Manhattan', boundaryJson: '{"type":"Polygon","coordinates":[[[-73.990,40.735],[-73.983,40.742],[-73.977,40.740],[-73.980,40.733],[-73.990,40.735]]]}', centroidLat: 40.738, centroidLng: -73.983, boundingBoxJson: '[40.733,-73.990,40.742,-73.977]' },
-    { precinctNum: 14, name: '14th Precinct (Midtown South)', address: '357 West 35th Street', phone: '(212) 239-9811', borough: 'Manhattan', boundaryJson: '{"type":"Polygon","coordinates":[[[-74.000,40.750],[-73.993,40.758],[-73.985,40.755],[-73.990,40.748],[-74.000,40.750]]]}', centroidLat: 40.753, centroidLng: -73.992, boundingBoxJson: '[40.748,-74.000,40.758,-73.985]' },
-    { precinctNum: 17, name: '17th Precinct', address: '167 East 51st Street', phone: '(212) 826-3211', borough: 'Manhattan', boundaryJson: '{"type":"Polygon","coordinates":[[[-73.978,40.755],[-73.971,40.762],[-73.965,40.760],[-73.969,40.753],[-73.978,40.755]]]}', centroidLat: 40.758, centroidLng: -73.971, boundingBoxJson: '[40.753,-73.978,40.762,-73.965]' },
-    { precinctNum: 18, name: '18th Precinct (Midtown North)', address: '306 West 54th Street', phone: '(212) 767-8400', borough: 'Manhattan', boundaryJson: '{"type":"Polygon","coordinates":[[[-73.993,40.760],[-73.985,40.768],[-73.978,40.766],[-73.983,40.758],[-73.993,40.760]]]}', centroidLat: 40.763, centroidLng: -73.985, boundingBoxJson: '[40.758,-73.993,40.768,-73.978]' },
-    { precinctNum: 19, name: '19th Precinct', address: '153 East 67th Street', phone: '(212) 452-0600', borough: 'Manhattan', boundaryJson: '{"type":"Polygon","coordinates":[[[-73.975,40.765],[-73.968,40.775],[-73.960,40.773],[-73.964,40.763],[-73.975,40.765]]]}', centroidLat: 40.769, centroidLng: -73.967, boundingBoxJson: '[40.763,-73.975,40.775,-73.960]' },
-    { precinctNum: 20, name: '20th Precinct', address: '120 West 82nd Street', phone: '(212) 580-6411', borough: 'Manhattan', boundaryJson: '{"type":"Polygon","coordinates":[[[-73.982,40.778],[-73.975,40.788],[-73.968,40.786],[-73.972,40.776],[-73.982,40.778]]]}', centroidLat: 40.782, centroidLng: -73.974, boundingBoxJson: '[40.776,-73.982,40.788,-73.968]' },
+    // Manhattan
+    { precinctNum: 1, name: '1st Precinct', address: '16 Ericsson Place', phone: '(212) 334-0611', borough: 'Manhattan',
+      boundaryJson: '{"type":"Polygon","coordinates":[[[-74.0179,40.7060],[-74.0145,40.7085],[-74.0120,40.7115],[-74.0095,40.7148],[-74.0050,40.7162],[-74.0012,40.7158],[-73.9985,40.7135],[-73.9978,40.7105],[-74.0005,40.7078],[-74.0040,40.7060],[-74.0075,40.7055],[-74.0115,40.7048],[-74.0155,40.7050],[-74.0179,40.7060]]]}',
+      centroidLat: 40.7105, centroidLng: -74.0075, boundingBoxJson: '[40.7048,-74.0179,40.7162,-73.9978]' },
+    { precinctNum: 5, name: '5th Precinct', address: '19 Elizabeth Street', phone: '(212) 334-0711', borough: 'Manhattan',
+      boundaryJson: '{"type":"Polygon","coordinates":[[[-74.0012,40.7158],[-73.9990,40.7175],[-73.9965,40.7198],[-73.9938,40.7210],[-73.9905,40.7202],[-73.9890,40.7180],[-73.9900,40.7155],[-73.9925,40.7140],[-73.9955,40.7138],[-73.9985,40.7135],[-74.0012,40.7158]]]}',
+      centroidLat: 40.7177, centroidLng: -73.9953, boundingBoxJson: '[40.7135,-74.0012,40.7210,-73.9890]' },
+    { precinctNum: 6, name: '6th Precinct', address: '233 West 10th Street', phone: '(212) 741-4811', borough: 'Manhattan',
+      boundaryJson: '{"type":"Polygon","coordinates":[[[-74.0085,40.7285],[-74.0060,40.7310],[-74.0038,40.7340],[-74.0015,40.7365],[-73.9985,40.7355],[-73.9962,40.7338],[-73.9958,40.7310],[-73.9970,40.7290],[-73.9998,40.7275],[-74.0030,40.7270],[-74.0058,40.7272],[-74.0085,40.7285]]]}',
+      centroidLat: 40.7318, centroidLng: -74.0015, boundingBoxJson: '[40.7270,-74.0085,40.7365,-73.9958]' },
+    { precinctNum: 7, name: '7th Precinct', address: '19 1/2 Pitt Street', phone: '(212) 477-7311', borough: 'Manhattan',
+      boundaryJson: '{"type":"Polygon","coordinates":[[[-73.9905,40.7140],[-73.9880,40.7160],[-73.9855,40.7185],[-73.9830,40.7198],[-73.9800,40.7190],[-73.9782,40.7170],[-73.9790,40.7148],[-73.9810,40.7128],[-73.9838,40.7118],[-73.9870,40.7120],[-73.9905,40.7140]]]}',
+      centroidLat: 40.7160, centroidLng: -73.9843, boundingBoxJson: '[40.7118,-73.9905,40.7198,-73.9782]' },
+    { precinctNum: 9, name: '9th Precinct', address: '321 East 5th Street', phone: '(212) 477-7811', borough: 'Manhattan',
+      boundaryJson: '{"type":"Polygon","coordinates":[[[-73.9930,40.7215],[-73.9905,40.7240],[-73.9878,40.7268],[-73.9852,40.7290],[-73.9820,40.7285],[-73.9798,40.7265],[-73.9805,40.7240],[-73.9820,40.7218],[-73.9850,40.7205],[-73.9882,40.7200],[-73.9930,40.7215]]]}',
+      centroidLat: 40.7247, centroidLng: -73.9861, boundingBoxJson: '[40.7200,-73.9930,40.7290,-73.9798]' },
+    { precinctNum: 10, name: '10th Precinct', address: '230 West 20th Street', phone: '(212) 741-8211', borough: 'Manhattan',
+      boundaryJson: '{"type":"Polygon","coordinates":[[[-74.0065,40.7390],[-74.0040,40.7418],[-74.0015,40.7445],[-73.9988,40.7470],[-73.9955,40.7462],[-73.9935,40.7440],[-73.9940,40.7415],[-73.9958,40.7395],[-73.9985,40.7380],[-74.0018,40.7375],[-74.0045,40.7378],[-74.0065,40.7390]]]}',
+      centroidLat: 40.7422, centroidLng: -73.9998, boundingBoxJson: '[40.7375,-74.0065,40.7470,-73.9935]' },
+    { precinctNum: 13, name: '13th Precinct', address: '230 East 21st Street', phone: '(212) 477-7411', borough: 'Manhattan',
+      boundaryJson: '{"type":"Polygon","coordinates":[[[-73.9910,40.7340],[-73.9885,40.7365],[-73.9858,40.7390],[-73.9830,40.7412],[-73.9798,40.7405],[-73.9778,40.7385],[-73.9785,40.7358],[-73.9805,40.7338],[-73.9835,40.7325],[-73.9865,40.7322],[-73.9910,40.7340]]]}',
+      centroidLat: 40.7367, centroidLng: -73.9842, boundingBoxJson: '[40.7322,-73.9910,40.7412,-73.9778]' },
+    { precinctNum: 14, name: '14th Precinct (Midtown South)', address: '357 West 35th Street', phone: '(212) 239-9811', borough: 'Manhattan',
+      boundaryJson: '{"type":"Polygon","coordinates":[[[-74.0010,40.7488],[-73.9985,40.7510],[-73.9958,40.7538],[-73.9930,40.7565],[-73.9898,40.7560],[-73.9870,40.7548],[-73.9858,40.7525],[-73.9868,40.7500],[-73.9892,40.7482],[-73.9925,40.7472],[-73.9960,40.7475],[-74.0010,40.7488]]]}',
+      centroidLat: 40.7524, centroidLng: -73.9930, boundingBoxJson: '[40.7472,-74.0010,40.7565,-73.9858]' },
+    { precinctNum: 17, name: '17th Precinct', address: '167 East 51st Street', phone: '(212) 826-3211', borough: 'Manhattan',
+      boundaryJson: '{"type":"Polygon","coordinates":[[[-73.9790,40.7538],[-73.9765,40.7560],[-73.9738,40.7585],[-73.9710,40.7608],[-73.9680,40.7600],[-73.9660,40.7580],[-73.9668,40.7555],[-73.9688,40.7535],[-73.9718,40.7522],[-73.9750,40.7520],[-73.9790,40.7538]]]}',
+      centroidLat: 40.7567, centroidLng: -73.9724, boundingBoxJson: '[40.7520,-73.9790,40.7608,-73.9660]' },
+    { precinctNum: 18, name: '18th Precinct (Midtown North)', address: '306 West 54th Street', phone: '(212) 767-8400', borough: 'Manhattan',
+      boundaryJson: '{"type":"Polygon","coordinates":[[[-73.9942,40.7590],[-73.9918,40.7615],[-73.9890,40.7642],[-73.9862,40.7668],[-73.9830,40.7660],[-73.9810,40.7640],[-73.9818,40.7615],[-73.9838,40.7595],[-73.9868,40.7580],[-73.9900,40.7575],[-73.9942,40.7590]]]}',
+      centroidLat: 40.7625, centroidLng: -73.9876, boundingBoxJson: '[40.7575,-73.9942,40.7668,-73.9810]' },
+    { precinctNum: 19, name: '19th Precinct', address: '153 East 67th Street', phone: '(212) 452-0600', borough: 'Manhattan',
+      boundaryJson: '{"type":"Polygon","coordinates":[[[-73.9760,40.7640],[-73.9738,40.7668],[-73.9712,40.7698],[-73.9688,40.7730],[-73.9655,40.7725],[-73.9632,40.7705],[-73.9640,40.7675],[-73.9658,40.7650],[-73.9688,40.7635],[-73.9720,40.7630],[-73.9760,40.7640]]]}',
+      centroidLat: 40.7685, centroidLng: -73.9695, boundingBoxJson: '[40.7630,-73.9760,40.7730,-73.9632]' },
+    { precinctNum: 20, name: '20th Precinct', address: '120 West 82nd Street', phone: '(212) 580-6411', borough: 'Manhattan',
+      boundaryJson: '{"type":"Polygon","coordinates":[[[-73.9832,40.7768],[-73.9808,40.7795],[-73.9782,40.7825],[-73.9758,40.7858],[-73.9725,40.7850],[-73.9705,40.7830],[-73.9712,40.7802],[-73.9730,40.7778],[-73.9758,40.7762],[-73.9790,40.7755],[-73.9832,40.7768]]]}',
+      centroidLat: 40.7810, centroidLng: -73.9766, boundingBoxJson: '[40.7755,-73.9832,40.7858,-73.9705]' },
     // Brooklyn
-    { precinctNum: 60, name: '60th Precinct', address: '2951 West 8th Street', phone: '(718) 946-3311', borough: 'Brooklyn', boundaryJson: '{"type":"Polygon","coordinates":[[[-73.990,40.575],[-73.978,40.582],[-73.968,40.578],[-73.975,40.570],[-73.990,40.575]]]}', centroidLat: 40.576, centroidLng: -73.978, boundingBoxJson: '[40.570,-73.990,40.582,-73.968]' },
-    { precinctNum: 61, name: '61st Precinct', address: '2575 Coney Island Avenue', phone: '(718) 627-6611', borough: 'Brooklyn', boundaryJson: '{"type":"Polygon","coordinates":[[[-73.968,40.578],[-73.955,40.590],[-73.945,40.585],[-73.955,40.573],[-73.968,40.578]]]}', centroidLat: 40.582, centroidLng: -73.956, boundingBoxJson: '[40.573,-73.968,40.590,-73.945]' },
-    { precinctNum: 66, name: '66th Precinct', address: '5822 16th Avenue', phone: '(718) 851-5611', borough: 'Brooklyn', boundaryJson: '{"type":"Polygon","coordinates":[[[-73.998,40.625],[-73.985,40.635],[-73.975,40.630],[-73.985,40.620],[-73.998,40.625]]]}', centroidLat: 40.628, centroidLng: -73.986, boundingBoxJson: '[40.620,-73.998,40.635,-73.975]' },
+    { precinctNum: 60, name: '60th Precinct', address: '2951 West 8th Street', phone: '(718) 946-3311', borough: 'Brooklyn',
+      boundaryJson: '{"type":"Polygon","coordinates":[[[-73.9918,40.5738],[-73.9888,40.5758],[-73.9855,40.5780],[-73.9822,40.5798],[-73.9788,40.5790],[-73.9760,40.5775],[-73.9748,40.5752],[-73.9758,40.5730],[-73.9780,40.5712],[-73.9812,40.5705],[-73.9850,40.5710],[-73.9885,40.5720],[-73.9918,40.5738]]]}',
+      centroidLat: 40.5752, centroidLng: -73.9832, boundingBoxJson: '[40.5705,-73.9918,40.5798,-73.9748]' },
+    { precinctNum: 61, name: '61st Precinct', address: '2575 Coney Island Avenue', phone: '(718) 627-6611', borough: 'Brooklyn',
+      boundaryJson: '{"type":"Polygon","coordinates":[[[-73.9690,40.5775],[-73.9658,40.5800],[-73.9625,40.5828],[-73.9590,40.5850],[-73.9555,40.5862],[-73.9520,40.5855],[-73.9498,40.5835],[-73.9510,40.5808],[-73.9535,40.5785],[-73.9568,40.5768],[-73.9605,40.5758],[-73.9648,40.5762],[-73.9690,40.5775]]]}',
+      centroidLat: 40.5813, centroidLng: -73.9592, boundingBoxJson: '[40.5758,-73.9690,40.5862,-73.9498]' },
+    { precinctNum: 66, name: '66th Precinct', address: '5822 16th Avenue', phone: '(718) 851-5611', borough: 'Brooklyn',
+      boundaryJson: '{"type":"Polygon","coordinates":[[[-73.9995,40.6228],[-73.9965,40.6255],[-73.9932,40.6280],[-73.9898,40.6302],[-73.9862,40.6318],[-73.9828,40.6310],[-73.9808,40.6290],[-73.9818,40.6265],[-73.9840,40.6242],[-73.9870,40.6225],[-73.9905,40.6215],[-73.9945,40.6218],[-73.9995,40.6228]]]}',
+      centroidLat: 40.6268, centroidLng: -73.9897, boundingBoxJson: '[40.6215,-73.9995,40.6318,-73.9808]' },
     // Bronx
-    { precinctNum: 40, name: '40th Precinct', address: '257 Alexander Avenue', phone: '(718) 402-2270', borough: 'Bronx', boundaryJson: '{"type":"Polygon","coordinates":[[[-73.925,40.810],[-73.915,40.820],[-73.905,40.815],[-73.912,40.805],[-73.925,40.810]]]}', centroidLat: 40.813, centroidLng: -73.914, boundingBoxJson: '[40.805,-73.925,40.820,-73.905]' },
-    { precinctNum: 41, name: '41st Precinct', address: '1035 Longwood Avenue', phone: '(718) 542-4771', borough: 'Bronx', boundaryJson: '{"type":"Polygon","coordinates":[[[-73.905,40.815],[-73.893,40.828],[-73.883,40.823],[-73.892,40.810],[-73.905,40.815]]]}', centroidLat: 40.819, centroidLng: -73.893, boundingBoxJson: '[40.810,-73.905,40.828,-73.883]' },
-    { precinctNum: 42, name: '42nd Precinct', address: '830 Washington Avenue', phone: '(718) 402-3887', borough: 'Bronx', boundaryJson: '{"type":"Polygon","coordinates":[[[-73.912,40.825],[-73.900,40.838],[-73.890,40.833],[-73.900,40.820],[-73.912,40.825]]]}', centroidLat: 40.829, centroidLng: -73.901, boundingBoxJson: '[40.820,-73.912,40.838,-73.890]' },
+    { precinctNum: 40, name: '40th Precinct', address: '257 Alexander Avenue', phone: '(718) 402-2270', borough: 'Bronx',
+      boundaryJson: '{"type":"Polygon","coordinates":[[[-73.9268,40.8088],[-73.9240,40.8112],[-73.9212,40.8140],[-73.9185,40.8165],[-73.9155,40.8178],[-73.9120,40.8170],[-73.9098,40.8148],[-73.9108,40.8122],[-73.9130,40.8098],[-73.9160,40.8080],[-73.9195,40.8072],[-73.9232,40.8075],[-73.9268,40.8088]]]}',
+      centroidLat: 40.8126, centroidLng: -73.9182, boundingBoxJson: '[40.8072,-73.9268,40.8178,-73.9098]' },
+    { precinctNum: 41, name: '41st Precinct', address: '1035 Longwood Avenue', phone: '(718) 542-4771', borough: 'Bronx',
+      boundaryJson: '{"type":"Polygon","coordinates":[[[-73.9068,40.8148],[-73.9040,40.8175],[-73.9012,40.8205],[-73.8982,40.8232],[-73.8948,40.8252],[-73.8912,40.8245],[-73.8890,40.8222],[-73.8902,40.8195],[-73.8925,40.8170],[-73.8958,40.8150],[-73.8995,40.8140],[-73.9035,40.8142],[-73.9068,40.8148]]]}',
+      centroidLat: 40.8195, centroidLng: -73.8980, boundingBoxJson: '[40.8140,-73.9068,40.8252,-73.8890]' },
+    { precinctNum: 42, name: '42nd Precinct', address: '830 Washington Avenue', phone: '(718) 402-3887', borough: 'Bronx',
+      boundaryJson: '{"type":"Polygon","coordinates":[[[-73.9135,40.8235],[-73.9108,40.8260],[-73.9078,40.8290],[-73.9048,40.8318],[-73.9015,40.8338],[-73.8978,40.8330],[-73.8958,40.8308],[-73.8968,40.8280],[-73.8990,40.8255],[-73.9022,40.8238],[-73.9058,40.8228],[-73.9098,40.8230],[-73.9135,40.8235]]]}',
+      centroidLat: 40.8283, centroidLng: -73.9042, boundingBoxJson: '[40.8228,-73.9135,40.8338,-73.8958]' },
     // Queens
-    { precinctNum: 100, name: '100th Precinct', address: '92-24 Rockaway Beach Blvd', phone: '(718) 318-4200', borough: 'Queens', boundaryJson: '{"type":"Polygon","coordinates":[[[-73.830,40.580],[-73.815,40.590],[-73.805,40.585],[-73.815,40.575],[-73.830,40.580]]]}', centroidLat: 40.583, centroidLng: -73.816, boundingBoxJson: '[40.575,-73.830,40.590,-73.805]' },
-    { precinctNum: 101, name: '101st Precinct', address: '16-12 Mott Avenue', phone: '(718) 868-3400', borough: 'Queens', boundaryJson: '{"type":"Polygon","coordinates":[[[-73.760,40.600],[-73.745,40.612],[-73.735,40.607],[-73.745,40.595],[-73.760,40.600]]]}', centroidLat: 40.604, centroidLng: -73.746, boundingBoxJson: '[40.595,-73.760,40.612,-73.735]' },
-    { precinctNum: 102, name: '102nd Precinct', address: '87-34 118th Street', phone: '(718) 805-3200', borough: 'Queens', boundaryJson: '{"type":"Polygon","coordinates":[[[-73.835,40.690],[-73.820,40.700],[-73.810,40.695],[-73.820,40.685],[-73.835,40.690]]]}', centroidLat: 40.693, centroidLng: -73.821, boundingBoxJson: '[40.685,-73.835,40.700,-73.810]' },
+    { precinctNum: 100, name: '100th Precinct', address: '92-24 Rockaway Beach Blvd', phone: '(718) 318-4200', borough: 'Queens',
+      boundaryJson: '{"type":"Polygon","coordinates":[[[-73.8318,40.5788],[-73.8288,40.5808],[-73.8255,40.5832],[-73.8220,40.5852],[-73.8182,40.5865],[-73.8148,40.5858],[-73.8125,40.5838],[-73.8135,40.5812],[-73.8158,40.5790],[-73.8190,40.5772],[-73.8228,40.5762],[-73.8272,40.5768],[-73.8318,40.5788]]]}',
+      centroidLat: 40.5818, centroidLng: -73.8222, boundingBoxJson: '[40.5762,-73.8318,40.5865,-73.8125]' },
+    { precinctNum: 101, name: '101st Precinct', address: '16-12 Mott Avenue', phone: '(718) 868-3400', borough: 'Queens',
+      boundaryJson: '{"type":"Polygon","coordinates":[[[-73.7618,40.5988],[-73.7588,40.6010],[-73.7555,40.6035],[-73.7520,40.6058],[-73.7485,40.6075],[-73.7448,40.6068],[-73.7428,40.6048],[-73.7438,40.6022],[-73.7460,40.5998],[-73.7492,40.5978],[-73.7530,40.5968],[-73.7572,40.5972],[-73.7618,40.5988]]]}',
+      centroidLat: 40.6022, centroidLng: -73.7523, boundingBoxJson: '[40.5968,-73.7618,40.6075,-73.7428]' },
+    { precinctNum: 102, name: '102nd Precinct', address: '87-34 118th Street', phone: '(718) 805-3200', borough: 'Queens',
+      boundaryJson: '{"type":"Polygon","coordinates":[[[-73.8368,40.6888],[-73.8338,40.6912],[-73.8305,40.6938],[-73.8270,40.6960],[-73.8232,40.6972],[-73.8198,40.6965],[-73.8175,40.6945],[-73.8188,40.6918],[-73.8210,40.6895],[-73.8242,40.6878],[-73.8280,40.6868],[-73.8322,40.6872],[-73.8368,40.6888]]]}',
+      centroidLat: 40.6920, centroidLng: -73.8272, boundingBoxJson: '[40.6868,-73.8368,40.6972,-73.8175]' },
     // Staten Island
-    { precinctNum: 120, name: '120th Precinct', address: '78 Richmond Terrace', phone: '(718) 876-8500', borough: 'Staten Island', boundaryJson: '{"type":"Polygon","coordinates":[[[-74.090,40.638],[-74.075,40.650],[-74.060,40.645],[-74.070,40.632],[-74.090,40.638]]]}', centroidLat: 40.641, centroidLng: -74.074, boundingBoxJson: '[40.632,-74.090,40.650,-74.060]' },
-    { precinctNum: 122, name: '122nd Precinct', address: '2320 Hylan Boulevard', phone: '(718) 667-2211', borough: 'Staten Island', boundaryJson: '{"type":"Polygon","coordinates":[[[-74.120,40.570],[-74.100,40.585],[-74.085,40.578],[-74.100,40.563],[-74.120,40.570]]]}', centroidLat: 40.574, centroidLng: -74.101, boundingBoxJson: '[40.563,-74.120,40.585,-74.085]' },
+    { precinctNum: 120, name: '120th Precinct', address: '78 Richmond Terrace', phone: '(718) 876-8500', borough: 'Staten Island',
+      boundaryJson: '{"type":"Polygon","coordinates":[[[-74.0920,40.6368],[-74.0888,40.6395],[-74.0855,40.6422],[-74.0820,40.6448],[-74.0782,40.6462],[-74.0745,40.6455],[-74.0718,40.6432],[-74.0728,40.6405],[-74.0752,40.6380],[-74.0788,40.6362],[-74.0828,40.6350],[-74.0872,40.6355],[-74.0920,40.6368]]]}',
+      centroidLat: 40.6408, centroidLng: -74.0818, boundingBoxJson: '[40.6350,-74.0920,40.6462,-74.0718]' },
+    { precinctNum: 122, name: '122nd Precinct', address: '2320 Hylan Boulevard', phone: '(718) 667-2211', borough: 'Staten Island',
+      boundaryJson: '{"type":"Polygon","coordinates":[[[-74.1218,40.5688],[-74.1185,40.5715],[-74.1148,40.5742],[-74.1110,40.5768],[-74.1072,40.5782],[-74.1035,40.5775],[-74.1010,40.5752],[-74.1022,40.5725],[-74.1048,40.5700],[-74.1082,40.5680],[-74.1122,40.5668],[-74.1168,40.5672],[-74.1218,40.5688]]]}',
+      centroidLat: 40.5726, centroidLng: -74.1118, boundingBoxJson: '[40.5668,-74.1218,40.5782,-74.1010]' },
   ];
 
   for (const p of precincts) {
@@ -212,17 +289,45 @@ async function seedPrecinctData(): Promise<void> {
 }
 
 async function seedSectorData(): Promise<void> {
-  // Simplified sector data for key precincts
-  const sectors: Sector[] = [
-    { sectorId: '1A', precinctNum: 1, boundaryJson: '{"type":"Polygon","coordinates":[[[-74.013,40.709],[-74.009,40.715],[-74.006,40.713],[-74.008,40.708],[-74.013,40.709]]]}', boundingBoxJson: '[40.708,-74.013,40.715,-74.006]' },
-    { sectorId: '1B', precinctNum: 1, boundaryJson: '{"type":"Polygon","coordinates":[[[-74.006,40.713],[-74.002,40.716],[-73.998,40.711],[-74.002,40.709],[-74.006,40.713]]]}', boundingBoxJson: '[40.709,-74.006,40.716,-73.998]' },
-    { sectorId: '5A', precinctNum: 5, boundaryJson: '{"type":"Polygon","coordinates":[[[-73.999,40.716],[-73.995,40.721],[-73.993,40.718],[-73.996,40.715],[-73.999,40.716]]]}', boundingBoxJson: '[40.715,-73.999,40.721,-73.993]' },
-    { sectorId: '14A', precinctNum: 14, boundaryJson: '{"type":"Polygon","coordinates":[[[-74.000,40.750],[-73.993,40.758],[-73.990,40.753],[-73.995,40.749],[-74.000,40.750]]]}', boundingBoxJson: '[40.749,-74.000,40.758,-73.990]' },
-    { sectorId: '40A', precinctNum: 40, boundaryJson: '{"type":"Polygon","coordinates":[[[-73.925,40.810],[-73.915,40.820],[-73.912,40.815],[-73.918,40.808],[-73.925,40.810]]]}', boundingBoxJson: '[40.808,-73.925,40.820,-73.912]' },
-    { sectorId: '60A', precinctNum: 60, boundaryJson: '{"type":"Polygon","coordinates":[[[-73.990,40.575],[-73.978,40.582],[-73.976,40.577],[-73.983,40.572],[-73.990,40.575]]]}', boundingBoxJson: '[40.572,-73.990,40.582,-73.976]' },
-  ];
+  // Auto-generate sector A and B for each precinct by splitting its boundary
+  const db = await getDatabase();
+  const precincts = await db.getAllAsync<Precinct>('SELECT * FROM precincts');
 
-  for (const s of sectors) {
-    await insertSector(s);
+  for (const p of precincts) {
+    try {
+      const geo = JSON.parse(p.boundaryJson);
+      const coords: number[][] = geo.coordinates[0];
+      const n = coords.length - 1; // exclude closing point
+      const half = Math.floor(n / 2);
+
+      // Sector A: first half of boundary + straight cut back
+      const sectorACoords = [...coords.slice(0, half + 1), coords[0]];
+      // Sector B: second half of boundary + straight cut back
+      const sectorBCoords = [coords[0], ...coords.slice(half), coords[0]];
+
+      const sectorA = buildSector(`${p.precinctNum}A`, p.precinctNum, sectorACoords);
+      const sectorB = buildSector(`${p.precinctNum}B`, p.precinctNum, sectorBCoords);
+
+      await insertSector(sectorA);
+      await insertSector(sectorB);
+    } catch {
+      // skip malformed
+    }
   }
+}
+
+function buildSector(sectorId: string, precinctNum: number, coords: number[][]): Sector {
+  let minLat = Infinity, maxLat = -Infinity, minLng = Infinity, maxLng = -Infinity;
+  for (const c of coords) {
+    if (c[1] < minLat) minLat = c[1];
+    if (c[1] > maxLat) maxLat = c[1];
+    if (c[0] < minLng) minLng = c[0];
+    if (c[0] > maxLng) maxLng = c[0];
+  }
+  return {
+    sectorId,
+    precinctNum,
+    boundaryJson: JSON.stringify({ type: 'Polygon', coordinates: [coords] }),
+    boundingBoxJson: JSON.stringify([minLat, minLng, maxLat, maxLng]),
+  };
 }
