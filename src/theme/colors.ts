@@ -59,6 +59,10 @@ export const Colors = {
     mapOverlayStroke: DBLUE,
     mapSelectedFill: 'rgba(211,47,47,0.15)',
     mapSelectedStroke: RED,
+    mapSectorFill: 'rgba(255,152,0,0.12)',
+    mapSectorStroke: '#FF9800',
+    mapSectorSelectedFill: 'rgba(255,109,0,0.25)',
+    mapSectorSelectedStroke: '#FF6D00',
 
     // Tab & Nav
     tabBar: '#FFFFFF',
@@ -133,6 +137,10 @@ export const Colors = {
     mapOverlayStroke: '#82B1FF',
     mapSelectedFill: 'rgba(239,83,80,0.20)',
     mapSelectedStroke: '#EF5350',
+    mapSectorFill: 'rgba(255,183,77,0.15)',
+    mapSectorStroke: '#FFB74D',
+    mapSectorSelectedFill: 'rgba(255,183,77,0.30)',
+    mapSectorSelectedStroke: '#FFA726',
 
     // Tab & Nav
     tabBar: '#0A0A0A',

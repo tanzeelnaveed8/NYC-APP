@@ -1,6 +1,6 @@
 import React, { createContext, useContext, useState, useEffect, useCallback } from 'react';
 import { useColorScheme } from 'react-native';
-import type { DarkMode, MapType, Precinct, Sector } from '../models';
+import type { DarkMode, MapType, Precinct, Sector, LatLng } from '../models';
 import { getAllPreferences, setPreference } from '../db/repositories/preferenceRepository';
 import { isInitialLoadComplete } from '../db/repositories/syncRepository';
 import { getLawStats } from '../db/repositories/lawRepository';
@@ -24,6 +24,12 @@ interface AppState {
   setSelectedPrecinct: (p: Precinct | null) => void;
   selectedSector: Sector | null;
   setSelectedSector: (s: Sector | null) => void;
+
+  // Address search state
+  searchedAddress: string | null;
+  setSearchedAddress: (addr: string | null) => void;
+  searchedLocation: LatLng | null;
+  setSearchedLocation: (loc: LatLng | null) => void;
 }
 
 const AppContext = createContext<AppState | undefined>(undefined);
@@ -36,6 +42,8 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
   const [boundaryVisible, setBoundaryVisible] = useState(true);
   const [selectedPrecinct, setSelectedPrecinct] = useState<Precinct | null>(null);
   const [selectedSector, setSelectedSector] = useState<Sector | null>(null);
+  const [searchedAddress, setSearchedAddress] = useState<string | null>(null);
+  const [searchedLocation, setSearchedLocation] = useState<LatLng | null>(null);
 
   // Determine if we should use dark theme
   const isDark =
@@ -101,6 +109,10 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
         setSelectedPrecinct,
         selectedSector,
         setSelectedSector,
+        searchedAddress,
+        setSearchedAddress,
+        searchedLocation,
+        setSearchedLocation,
       }}
     >
       {children}

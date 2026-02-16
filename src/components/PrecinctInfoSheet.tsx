@@ -11,12 +11,13 @@ interface Props {
   precinct: Precinct;
   sector?: Sector | null;
   reverseAddress?: string | null;
+  searchedAddress?: string | null;
   onClose?: () => void;
   isFavorited?: boolean;
   onToggleFavorite?: () => void;
 }
 
-export function PrecinctInfoSheet({ precinct, sector, reverseAddress, onClose, isFavorited, onToggleFavorite }: Props) {
+export function PrecinctInfoSheet({ precinct, sector, reverseAddress, searchedAddress, onClose, isFavorited, onToggleFavorite }: Props) {
   const { isDark } = useAppContext();
   const colors = isDark ? Colors.dark : Colors.light;
   const [copySnack, setCopySnack] = useState(false);
@@ -83,6 +84,33 @@ export function PrecinctInfoSheet({ precinct, sector, reverseAddress, onClose, i
         {onClose && (
           <IconButton icon="close" iconColor={colors.textTertiary} size={20} onPress={onClose} style={{ margin: 0 }} />
         )}
+      </View>
+
+      {/* Searched address */}
+      {searchedAddress && (
+        <View style={[styles.searchedAddressBox, { backgroundColor: `${colors.accent}10`, borderColor: `${colors.accent}25` }]}>
+          <MaterialCommunityIcons name="map-search-outline" size={16} color={colors.accent} />
+          <Text style={[styles.searchedAddressText, { color: colors.textPrimary }]} numberOfLines={2}>
+            {searchedAddress}
+          </Text>
+        </View>
+      )}
+
+      {/* Labeled Precinct & Sector */}
+      <View style={styles.labeledInfoSection}>
+        <View style={[styles.labeledInfoCard, { backgroundColor: `${colors.accent}10`, borderColor: `${colors.accent}20` }]}>
+          <Text style={[styles.labeledInfoLabel, { color: colors.textTertiary }]}>Precinct</Text>
+          <Text style={[styles.labeledInfoValue, { color: colors.accent }]}>{precinct.precinctNum}</Text>
+        </View>
+        <View style={[
+          styles.labeledInfoCard,
+          { backgroundColor: sector ? 'rgba(255,152,0,0.10)' : `${colors.outline}20`, borderColor: sector ? 'rgba(255,152,0,0.25)' : `${colors.outline}30` },
+        ]}>
+          <Text style={[styles.labeledInfoLabel, { color: colors.textTertiary }]}>Sector</Text>
+          <Text style={[styles.labeledInfoValue, { color: sector ? '#FF9800' : colors.textTertiary }]}>
+            {sector ? sector.sectorId : '—'}
+          </Text>
+        </View>
       </View>
 
       {/* Reverse geocoded address */}
@@ -205,6 +233,43 @@ const styles = StyleSheet.create({
   badgeText: {
     fontSize: 11,
     fontWeight: '700',
+  },
+  searchedAddressBox: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 8,
+    padding: 10,
+    borderRadius: 10,
+    marginTop: 10,
+    borderWidth: 1,
+  },
+  searchedAddressText: {
+    fontSize: 13,
+    fontWeight: '600',
+    flex: 1,
+  },
+  labeledInfoSection: {
+    flexDirection: 'row',
+    gap: 10,
+    marginTop: 12,
+  },
+  labeledInfoCard: {
+    flex: 1,
+    alignItems: 'center',
+    paddingVertical: 10,
+    borderRadius: 12,
+    borderWidth: 1,
+  },
+  labeledInfoLabel: {
+    fontSize: 10,
+    fontWeight: '700',
+    letterSpacing: 0.8,
+    textTransform: 'uppercase',
+  },
+  labeledInfoValue: {
+    fontSize: 22,
+    fontWeight: '900',
+    marginTop: 2,
   },
   reverseBox: {
     flexDirection: 'row',

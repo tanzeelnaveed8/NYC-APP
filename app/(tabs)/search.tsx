@@ -1,12 +1,13 @@
 import React, { useState, useCallback, useEffect } from 'react';
-import { View, StyleSheet, FlatList, TouchableOpacity, Keyboard, TextInput } from 'react-native';
+import { View, StyleSheet, FlatList, TouchableOpacity, Keyboard, TextInput, Alert, ActivityIndicator } from 'react-native';
 import { Text } from 'react-native-paper';
 import { FontAwesome5 } from '@expo/vector-icons';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { router } from 'expo-router';
+import * as Location from 'expo-location';
 import { useAppContext } from '../../src/context/AppContext';
 import { Colors, getBoroughColor } from '../../src/theme/colors';
-import { getAllPrecincts } from '../../src/db/repositories/precinctRepository';
+import { getAllPrecincts, findPrecinctAtLocation, findSectorAtLocation } from '../../src/db/repositories/precinctRepository';
 import { getRecentSearches, addRecentSearch, clearRecentSearches } from '../../src/db/repositories/searchRepository';
 import type { Precinct, RecentSearch } from '../../src/models';
 
@@ -19,7 +20,7 @@ const BOROUGH_ICONS: Record<string, string> = {
 };
 
 export default function SearchScreen() {
-  const { isDark, setSelectedPrecinct, setSelectedSector } = useAppContext();
+  const { isDark, setSelectedPrecinct, setSelectedSector, setSearchedAddress, setSearchedLocation } = useAppContext();
   const colors = isDark ? Colors.dark : Colors.light;
   const insets = useSafeAreaInsets();
 
@@ -27,6 +28,7 @@ export default function SearchScreen() {
   const [allPrecincts, setAllPrecincts] = useState<Precinct[]>([]);
   const [results, setResults] = useState<Precinct[]>([]);
   const [recentSearches, setRecentSearches] = useState<RecentSearch[]>([]);
+  const [geocoding, setGeocoding] = useState(false);
 
   useEffect(() => {
     (async () => {
@@ -60,10 +62,56 @@ export default function SearchScreen() {
     });
     setSelectedPrecinct(precinct);
     setSelectedSector(null);
+    setSearchedAddress(null);
+    setSearchedLocation(null);
     const recent = await getRecentSearches();
     setRecentSearches(recent);
     router.navigate('/(tabs)/map');
-  }, [setSelectedPrecinct, setSelectedSector]);
+  }, [setSelectedPrecinct, setSelectedSector, setSearchedAddress, setSearchedLocation]);
+
+  const handleAddressSearch = useCallback(async () => {
+    if (!query.trim() || geocoding) return;
+    Keyboard.dismiss();
+    setGeocoding(true);
+    try {
+      const geocodeResults = await Location.geocodeAsync(query.trim() + ', New York City, NY');
+      if (!geocodeResults || geocodeResults.length === 0) {
+        Alert.alert('Address Not Found', 'Could not locate that address. Try a more specific NYC address.');
+        setGeocoding(false);
+        return;
+      }
+      const { latitude, longitude } = geocodeResults[0];
+      const point = { latitude, longitude };
+      const precinct = await findPrecinctAtLocation(point);
+      const sector = await findSectorAtLocation(point);
+
+      if (!precinct) {
+        Alert.alert('Outside NYC', 'This address does not appear to be within an NYC precinct boundary.');
+        setGeocoding(false);
+        return;
+      }
+
+      await addRecentSearch({
+        queryText: query.trim(),
+        displayAddress: query.trim(),
+        latitude,
+        longitude,
+        timestamp: Date.now(),
+      });
+      const recent = await getRecentSearches();
+      setRecentSearches(recent);
+
+      setSelectedPrecinct(precinct);
+      setSelectedSector(sector);
+      setSearchedAddress(query.trim());
+      setSearchedLocation(point);
+      setGeocoding(false);
+      router.navigate('/(tabs)/map');
+    } catch {
+      Alert.alert('Error', 'Failed to search address. Please check your connection and try again.');
+      setGeocoding(false);
+    }
+  }, [query, geocoding, setSelectedPrecinct, setSelectedSector, setSearchedAddress, setSearchedLocation]);
 
   const handleRecentPress = useCallback(async (search: RecentSearch) => {
     const match = allPrecincts.find(p =>
@@ -121,6 +169,31 @@ export default function SearchScreen() {
       {hasQuery ? (
         results.length > 0 ? (
           <View style={{ flex: 1 }}>
+            {/* Address search card */}
+            <TouchableOpacity
+              style={[styles.addressSearchCard, { backgroundColor: isDark ? colors.surfaceVariant : '#EEF4FF', borderColor: isDark ? colors.accent + '30' : colors.accent + '25' }]}
+              onPress={handleAddressSearch}
+              activeOpacity={0.7}
+              disabled={geocoding}
+            >
+              <View style={[styles.addressSearchIcon, { backgroundColor: isDark ? colors.accent + '20' : colors.accent + '15' }]}>
+                {geocoding ? (
+                  <ActivityIndicator size="small" color={colors.accent} />
+                ) : (
+                  <FontAwesome5 name="map-pin" size={14} color={colors.accent} />
+                )}
+              </View>
+              <View style={{ flex: 1 }}>
+                <Text style={[styles.addressSearchTitle, { color: colors.accent }]}>
+                  {geocoding ? 'Searching...' : 'Find precinct for this address'}
+                </Text>
+                <Text style={[styles.addressSearchSub, { color: colors.textTertiary }]} numberOfLines={1}>
+                  Search "{query.trim()}" as an NYC address
+                </Text>
+              </View>
+              <FontAwesome5 name="arrow-right" size={12} color={colors.accent} />
+            </TouchableOpacity>
+
             {/* Results count */}
             <View style={[styles.countBar, { backgroundColor: isDark ? colors.surfaceVariant : '#E3EDF5' }]}>
               <FontAwesome5 name="check-circle" size={12} color={colors.accent} />
@@ -175,13 +248,34 @@ export default function SearchScreen() {
           </View>
         ) : (
           <View style={styles.emptyState}>
-            <View style={[styles.emptyIcon, { backgroundColor: isDark ? colors.surfaceVariant : '#F4F6F9' }]}>
-              <FontAwesome5 name="map-marked-alt" size={32} color={colors.textTertiary} />
+            {/* Prominent address search for no-match */}
+            <TouchableOpacity
+              style={[styles.addressSearchCardLarge, { backgroundColor: isDark ? colors.surfaceVariant : '#EEF4FF', borderColor: isDark ? colors.accent + '30' : colors.accent + '25' }]}
+              onPress={handleAddressSearch}
+              activeOpacity={0.7}
+              disabled={geocoding}
+            >
+              <View style={[styles.addressSearchIconLarge, { backgroundColor: isDark ? colors.accent + '20' : colors.accent + '15' }]}>
+                {geocoding ? (
+                  <ActivityIndicator size="small" color={colors.accent} />
+                ) : (
+                  <FontAwesome5 name="map-pin" size={20} color={colors.accent} />
+                )}
+              </View>
+              <Text style={[styles.addressSearchTitleLarge, { color: colors.accent }]}>
+                {geocoding ? 'Searching address...' : 'Search as NYC Address'}
+              </Text>
+              <Text style={[styles.addressSearchSubLarge, { color: colors.textTertiary }]} numberOfLines={2}>
+                Find which precinct & sector covers "{query.trim()}"
+              </Text>
+            </TouchableOpacity>
+
+            <View style={{ marginTop: 24, alignItems: 'center' }}>
+              <Text style={[styles.emptyTitle, { color: colors.textSecondary }]}>No precincts matched</Text>
+              <Text style={[styles.emptySub, { color: colors.textTertiary }]}>
+                Try the address search above, or search by borough name or precinct number
+              </Text>
             </View>
-            <Text style={[styles.emptyTitle, { color: colors.textSecondary }]}>No precincts found</Text>
-            <Text style={[styles.emptySub, { color: colors.textTertiary }]}>
-              Try searching by borough name, precinct number, or address
-            </Text>
           </View>
         )
       ) : (
@@ -344,6 +438,31 @@ const styles = StyleSheet.create({
     width: 30, height: 30, borderRadius: 10,
     alignItems: 'center', justifyContent: 'center', marginLeft: 8,
   },
+
+  // ── Address Search Card ──
+  addressSearchCard: {
+    flexDirection: 'row', alignItems: 'center',
+    marginHorizontal: 16, marginTop: 12, marginBottom: 4,
+    padding: 14, borderRadius: 14, borderWidth: 1,
+    gap: 12,
+  },
+  addressSearchIcon: {
+    width: 40, height: 40, borderRadius: 12,
+    alignItems: 'center', justifyContent: 'center',
+  },
+  addressSearchTitle: { fontSize: 13, fontWeight: '700' },
+  addressSearchSub: { fontSize: 11, marginTop: 2 },
+  addressSearchCardLarge: {
+    alignItems: 'center',
+    padding: 24, borderRadius: 20, borderWidth: 1,
+    width: '100%',
+  },
+  addressSearchIconLarge: {
+    width: 56, height: 56, borderRadius: 16,
+    alignItems: 'center', justifyContent: 'center', marginBottom: 12,
+  },
+  addressSearchTitleLarge: { fontSize: 16, fontWeight: '800' },
+  addressSearchSubLarge: { fontSize: 13, textAlign: 'center', marginTop: 6 },
 
   // ── Empty state ──
   emptyState: { flex: 1, alignItems: 'center', justifyContent: 'center', paddingHorizontal: 40 },
