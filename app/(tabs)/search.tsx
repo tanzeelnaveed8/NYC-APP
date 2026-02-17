@@ -3,12 +3,12 @@ import { View, StyleSheet, FlatList, TouchableOpacity, Keyboard, TextInput, Aler
 import { Text } from 'react-native-paper';
 import { FontAwesome5 } from '@expo/vector-icons';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import { router } from 'expo-router';
-import * as Location from 'expo-location';
+import { router, useFocusEffect } from 'expo-router';
 import { useAppContext } from '../../src/context/AppContext';
 import { Colors, getBoroughColor } from '../../src/theme/colors';
-import { getAllPrecincts, findPrecinctAtLocation, findSectorAtLocation, findNearestPrecinct } from '../../src/db/repositories/precinctRepository';
+import { getAllPrecincts, findPrecinctAtLocation, findSectorAtLocation, findNearestPrecinct, getPrecinctByNumber } from '../../src/db/repositories/precinctRepository';
 import { getRecentSearches, addRecentSearch, clearRecentSearches } from '../../src/db/repositories/searchRepository';
+import { geocodeAddress, findNearbyNYPDPrecinct } from '../../src/services/nycApi';
 import type { Precinct, RecentSearch } from '../../src/models';
 
 const BOROUGH_ICONS: Record<string, string> = {
@@ -30,14 +30,15 @@ export default function SearchScreen() {
   const [recentSearches, setRecentSearches] = useState<RecentSearch[]>([]);
   const [geocoding, setGeocoding] = useState(false);
 
-  useEffect(() => {
-    (async () => {
-      const data = await getAllPrecincts();
-      setAllPrecincts(data);
-      const recent = await getRecentSearches();
-      setRecentSearches(recent);
-    })();
+  const loadData = useCallback(async () => {
+    const data = await getAllPrecincts();
+    setAllPrecincts(data);
+    const recent = await getRecentSearches();
+    setRecentSearches(recent);
   }, []);
+
+  // Reload data every time this screen gets focus
+  useFocusEffect(useCallback(() => { loadData(); }, [loadData]));
 
   useEffect(() => {
     if (!query.trim()) { setResults([]); return; }
@@ -75,47 +76,25 @@ export default function SearchScreen() {
     setGeocoding(true);
     try {
       const searchQuery = query.trim();
-      let latitude: number | null = null;
-      let longitude: number | null = null;
+      const geocoded = await geocodeAddress(searchQuery);
 
-      // Method 1: Use free Nominatim (OpenStreetMap) geocoding API — most reliable
-      try {
-        const encoded = encodeURIComponent(searchQuery + ', New York City, NY, USA');
-        const url = `https://nominatim.openstreetmap.org/search?q=${encoded}&format=json&limit=1&countrycodes=us`;
-        const response = await fetch(url, {
-          headers: { 'User-Agent': 'NYCPrecinctApp/1.0' },
-        });
-        const data = await response.json();
-        if (data && data.length > 0) {
-          latitude = parseFloat(data[0].lat);
-          longitude = parseFloat(data[0].lon);
-        }
-      } catch {}
-
-      // Method 2: Fallback to native expo-location geocoder
-      if (latitude === null || longitude === null) {
-        try {
-          const { status } = await Location.requestForegroundPermissionsAsync();
-          if (status === 'granted') {
-            const nativeResults = await Location.geocodeAsync(searchQuery + ', New York, NY');
-            if (nativeResults && nativeResults.length > 0) {
-              latitude = nativeResults[0].latitude;
-              longitude = nativeResults[0].longitude;
-            }
-          }
-        } catch {}
-      }
-
-      if (latitude === null || longitude === null) {
+      if (!geocoded) {
         Alert.alert('Address Not Found', 'Could not locate that address. Try a more specific NYC address (e.g. "123 Broadway, Manhattan").');
         setGeocoding(false);
         return;
       }
 
+      const { latitude, longitude } = geocoded;
       const point = { latitude, longitude };
 
-      // Try exact point-in-polygon first, then fall back to nearest precinct
-      let precinct = await findPrecinctAtLocation(point);
+      // Ask Google which NYPD precinct covers this location
+      let precinct = null;
+      const nearbyNum = await findNearbyNYPDPrecinct(latitude, longitude);
+      if (nearbyNum) {
+        precinct = await getPrecinctByNumber(nearbyNum);
+      }
+
+      // Fallback to nearest centroid if Google didn't find one
       if (!precinct) {
         precinct = await findNearestPrecinct(point);
       }
@@ -150,12 +129,34 @@ export default function SearchScreen() {
   }, [query, geocoding, setSelectedPrecinct, setSelectedSector, setSearchedAddress, setSearchedLocation]);
 
   const handleRecentPress = useCallback(async (search: RecentSearch) => {
+    Keyboard.dismiss();
     const match = allPrecincts.find(p =>
       p.centroidLat === search.latitude && p.centroidLng === search.longitude
     );
-    if (match) handleSelect(match);
-    else router.navigate('/(tabs)/map');
-  }, [allPrecincts, handleSelect]);
+    if (match) {
+      handleSelect(match);
+    } else {
+      const point = { latitude: search.latitude, longitude: search.longitude };
+      let precinct = null;
+      const nearbyNum = await findNearbyNYPDPrecinct(search.latitude, search.longitude);
+      if (nearbyNum) {
+        precinct = await getPrecinctByNumber(nearbyNum);
+      }
+      if (!precinct) {
+        precinct = await findNearestPrecinct(point);
+      }
+      const sector = await findSectorAtLocation(point);
+      if (precinct) {
+        setSelectedPrecinct(precinct);
+        setSelectedSector(sector);
+        setSearchedAddress(search.displayAddress);
+        setSearchedLocation(point);
+        router.navigate('/(tabs)/map');
+      } else {
+        Alert.alert('Location Not Found', 'Could not find a precinct for this recent search.');
+      }
+    }
+  }, [allPrecincts, handleSelect, setSelectedPrecinct, setSelectedSector, setSearchedAddress, setSearchedLocation]);
 
   const handleClear = async () => {
     await clearRecentSearches();
@@ -185,7 +186,10 @@ export default function SearchScreen() {
             placeholder="Search by name, address, borough..."
             value={query}
             onChangeText={setQuery}
-            onSubmitEditing={() => results.length > 0 && handleSelect(results[0])}
+            onSubmitEditing={() => {
+              if (results.length > 0) handleSelect(results[0]);
+              else if (query.trim()) handleAddressSearch();
+            }}
             style={[styles.searchInput, { color: colors.textPrimary }]}
             placeholderTextColor={isDark ? colors.textTertiary : '#9EAAB8'}
             returnKeyType="search"

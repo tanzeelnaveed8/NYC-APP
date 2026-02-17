@@ -94,12 +94,12 @@ export function PrecinctInfoSheet({ precinct, sector, reverseAddress, searchedAd
       {/* Precinct & Sector info cards */}
       <View style={styles.labeledInfoSection}>
         {/* Precinct card */}
-        <View style={[styles.labeledInfoCard, { backgroundColor: 'rgba(244,67,54,0.08)', borderColor: 'rgba(244,67,54,0.20)' }]}>
+        <View style={[styles.labeledInfoCard, { backgroundColor: `${colors.accent}14`, borderColor: `${colors.accent}30` }]}>
           <View style={[styles.labeledInfoIconRow]}>
-            <MaterialCommunityIcons name="shield-outline" size={16} color="#E53935" />
+            <MaterialCommunityIcons name="shield-outline" size={16} color={colors.accent} />
             <Text style={[styles.labeledInfoLabel, { color: colors.textTertiary }]}>PRECINCT</Text>
           </View>
-          <Text style={[styles.labeledInfoValue, { color: '#E53935' }]}>{precinct.precinctNum}</Text>
+          <Text style={[styles.labeledInfoValue, { color: colors.accent }]}>{precinct.precinctNum}</Text>
           <Text style={[styles.labeledInfoName, { color: colors.textSecondary }]} numberOfLines={1}>
             {precinct.name}
           </Text>

@@ -47,17 +47,17 @@ export const Colors = {
     highlight: RED,
     highlightBg: 'rgba(211,47,47,0.10)',
 
-    // Borough colors
-    boroughManhattan: '#D32F2F',
-    boroughBrooklyn: '#D32F2F',
-    boroughBronx: '#D32F2F',
-    boroughQueens: '#D32F2F',
-    boroughStatenIsland: '#D32F2F',
+    // Borough colors — blue
+    boroughManhattan: DBLUE,
+    boroughBrooklyn: DBLUE,
+    boroughBronx: DBLUE,
+    boroughQueens: DBLUE,
+    boroughStatenIsland: DBLUE,
 
-    // Map — red precincts
-    mapOverlayFill: 'rgba(211,47,47,0.18)',
+    // Map — blue precincts, red boundaries
+    mapOverlayFill: 'rgba(41,121,255,0.18)',
     mapOverlayStroke: '#D32F2F',
-    mapSelectedFill: 'rgba(211,47,47,0.40)',
+    mapSelectedFill: 'rgba(41,121,255,0.40)',
     mapSelectedStroke: '#B71C1C',
     mapSectorFill: 'rgba(255,167,38,0.22)',
     mapSectorStroke: '#FFA726',
@@ -125,17 +125,17 @@ export const Colors = {
     highlight: '#EF5350',
     highlightBg: 'rgba(239,83,80,0.15)',
 
-    // Borough colors
-    boroughManhattan: '#EF5350',
-    boroughBrooklyn: '#EF5350',
-    boroughBronx: '#EF5350',
-    boroughQueens: '#EF5350',
-    boroughStatenIsland: '#EF5350',
+    // Borough colors — blue
+    boroughManhattan: '#82B1FF',
+    boroughBrooklyn: '#82B1FF',
+    boroughBronx: '#82B1FF',
+    boroughQueens: '#82B1FF',
+    boroughStatenIsland: '#82B1FF',
 
-    // Map — red precincts
-    mapOverlayFill: 'rgba(239,83,80,0.18)',
+    // Map — blue precincts, red boundaries
+    mapOverlayFill: 'rgba(130,177,255,0.18)',
     mapOverlayStroke: '#EF5350',
-    mapSelectedFill: 'rgba(239,83,80,0.40)',
+    mapSelectedFill: 'rgba(130,177,255,0.40)',
     mapSelectedStroke: '#D32F2F',
     mapSectorFill: 'rgba(255,183,77,0.22)',
     mapSectorStroke: '#FFB74D',

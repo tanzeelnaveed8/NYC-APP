@@ -1,17 +1,16 @@
-import React, { useState, useEffect, useCallback, useRef, useMemo } from 'react';
-import { View, StyleSheet, Alert, Platform, TouchableOpacity } from 'react-native';
-import MapView, { Polygon, MapPressEvent, LongPressEvent, Region } from 'react-native-maps';
+import React, { useState, useEffect, useCallback, useRef } from 'react';
+import { View, StyleSheet } from 'react-native';
+import MapView, { Marker, MapPressEvent, LongPressEvent, Region } from 'react-native-maps';
 import { Snackbar, Portal, Dialog, Button, TextInput as PaperInput, FAB, Text } from 'react-native-paper';
-import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import * as Location from 'expo-location';
 import { useAppContext } from '../../src/context/AppContext';
+import { reverseGeocode, findNearbyNYPDPrecinct } from '../../src/services/nycApi';
 import { PrecinctInfoSheet } from '../../src/components/PrecinctInfoSheet';
-import { getAllPrecincts, getSectorsForPrecinct, findPrecinctAtLocation, findSectorAtLocation } from '../../src/db/repositories/precinctRepository';
+import { findPrecinctAtLocation, findSectorAtLocation, getPrecinctByNumber } from '../../src/db/repositories/precinctRepository';
 import { isFavorited, upsertFavorite, removeFavorite } from '../../src/db/repositories/favoriteRepository';
-import { Colors, getBoroughColor } from '../../src/theme/colors';
-import { getPolygonRings } from '../../src/utils/geo';
-import type { Precinct, Sector, LatLng } from '../../src/models';
+import { Colors } from '../../src/theme/colors';
+import type { LatLng } from '../../src/models';
 
 const NYC_CENTER: Region = {
   latitude: 40.7128,
@@ -22,7 +21,7 @@ const NYC_CENTER: Region = {
 
 export default function MapScreen() {
   const {
-    isDark, mapType, boundaryVisible,
+    isDark, mapType,
     selectedPrecinct, setSelectedPrecinct,
     selectedSector, setSelectedSector,
     searchedAddress, setSearchedAddress,
@@ -32,44 +31,23 @@ export default function MapScreen() {
   const insets = useSafeAreaInsets();
   const mapRef = useRef<MapView>(null);
 
-  const [precincts, setPrecincts] = useState<Precinct[]>([]);
-  const [sectors, setSectors] = useState<Sector[]>([]);
   const [isFav, setIsFav] = useState(false);
   const [snackMessage, setSnackMessage] = useState('');
   const [reverseAddress, setReverseAddress] = useState<string | null>(null);
+  const [tappedLocation, setTappedLocation] = useState<LatLng | null>(null);
   const [favDialogVisible, setFavDialogVisible] = useState(false);
   const [favLabel, setFavLabel] = useState('');
-  const [showSectors, setShowSectors] = useState(false);
 
-  // Load precincts
-  useEffect(() => {
-    (async () => {
-      const data = await getAllPrecincts();
-      setPrecincts(data);
-    })();
-  }, []);
-
-  // Load sectors when precinct selected
+  // Load favorite status when precinct selected
   useEffect(() => {
     if (selectedPrecinct) {
       (async () => {
-        const sectorData = await getSectorsForPrecinct(selectedPrecinct.precinctNum);
-        setSectors(sectorData);
         const fav = await isFavorited(selectedPrecinct.precinctNum);
         setIsFav(fav);
       })();
     } else {
-      setSectors([]);
       setReverseAddress(null);
-    }
-  }, [selectedPrecinct]);
-
-  // Auto-enable sector view when a precinct is selected
-  useEffect(() => {
-    if (selectedPrecinct) {
-      setShowSectors(true);
-    } else {
-      setShowSectors(false);
+      setTappedLocation(null);
     }
   }, [selectedPrecinct]);
 
@@ -96,10 +74,20 @@ export default function MapScreen() {
   const handleMapPress = useCallback(async (e: MapPressEvent) => {
     const { latitude, longitude } = e.nativeEvent.coordinate;
     const point: LatLng = { latitude, longitude };
-    const precinct = await findPrecinctAtLocation(point);
-    const sector = await findSectorAtLocation(point);
+
+    // Ask Google which precinct covers this point
+    let precinct = null;
+    const nearbyNum = await findNearbyNYPDPrecinct(latitude, longitude);
+    if (nearbyNum) {
+      precinct = await getPrecinctByNumber(nearbyNum);
+    }
+    if (!precinct) {
+      precinct = await findPrecinctAtLocation(point);
+    }
+
     setSelectedPrecinct(precinct);
-    setSelectedSector(sector);
+    setSelectedSector(null);
+    setTappedLocation(precinct ? point : null);
     setReverseAddress(null);
     setSearchedAddress(null);
     setSearchedLocation(null);
@@ -108,17 +96,22 @@ export default function MapScreen() {
   const handleMapLongPress = useCallback(async (e: LongPressEvent) => {
     const { latitude, longitude } = e.nativeEvent.coordinate;
     const point: LatLng = { latitude, longitude };
-    const precinct = await findPrecinctAtLocation(point);
-    const sector = await findSectorAtLocation(point);
+
+    let precinct = null;
+    const nearbyNum = await findNearbyNYPDPrecinct(latitude, longitude);
+    if (nearbyNum) {
+      precinct = await getPrecinctByNumber(nearbyNum);
+    }
+    if (!precinct) {
+      precinct = await findPrecinctAtLocation(point);
+    }
+
     setSelectedPrecinct(precinct);
-    setSelectedSector(sector);
+    setSelectedSector(null);
+    setTappedLocation(point);
     try {
-      const results = await Location.reverseGeocodeAsync({ latitude, longitude });
-      if (results?.length > 0) {
-        const r = results[0];
-        const parts = [r.streetNumber, r.street, r.city, r.region, r.postalCode].filter(Boolean);
-        setReverseAddress(parts.join(', ') || 'Address not found');
-      }
+      const address = await reverseGeocode(latitude, longitude);
+      setReverseAddress(address || 'Address not found');
     } catch {
       setReverseAddress('Unable to resolve address');
     }
@@ -148,6 +141,7 @@ export default function MapScreen() {
   const handleClose = useCallback(() => {
     setSelectedPrecinct(null);
     setSelectedSector(null);
+    setTappedLocation(null);
     setReverseAddress(null);
     setSearchedAddress(null);
     setSearchedLocation(null);
@@ -169,54 +163,6 @@ export default function MapScreen() {
 
   const mapTypeValue = mapType === 'satellite' ? 'satellite' : mapType === 'terrain' ? 'terrain' : 'standard';
 
-  // Polygon overlays — red precincts (hide selected precinct when sectors are visible)
-  const precinctPolygons = useMemo(() => {
-    if (!boundaryVisible) return null;
-    const hideCurrent = showSectors && sectors.length > 0;
-    return precincts.map((precinct) => {
-      try {
-        const geometry = JSON.parse(precinct.boundaryJson);
-        const rings = getPolygonRings(geometry);
-        const isSelected = selectedPrecinct?.precinctNum === precinct.precinctNum;
-        if (isSelected && hideCurrent) return null;
-        return rings.map((ring, i) => (
-          <Polygon
-            key={`p-${precinct.precinctNum}-${i}`}
-            coordinates={ring}
-            strokeColor={isSelected ? colors.mapSelectedStroke : colors.mapOverlayStroke}
-            fillColor={isSelected ? colors.mapSelectedFill : colors.mapOverlayFill}
-            strokeWidth={isSelected ? 3.5 : 2}
-            tappable={false}
-          />
-        ));
-      } catch { return null; }
-    });
-  }, [precincts, boundaryVisible, selectedPrecinct, showSectors, sectors, colors]);
-
-  // Sector overlays — warm orange/amber, dashed borders
-  const sectorPolygons = useMemo(() => {
-    if (!boundaryVisible || !selectedPrecinct || !showSectors) return null;
-    if (sectors.length === 0) return null;
-    return sectors.map((sector) => {
-      try {
-        const geometry = JSON.parse(sector.boundaryJson);
-        const rings = getPolygonRings(geometry);
-        const isSelected = selectedSector?.sectorId === sector.sectorId;
-        return rings.map((ring, i) => (
-          <Polygon
-            key={`s-${sector.sectorId}-${i}`}
-            coordinates={ring}
-            strokeColor={isSelected ? colors.mapSectorSelectedStroke : colors.mapSectorStroke}
-            fillColor={isSelected ? colors.mapSectorSelectedFill : colors.mapSectorFill}
-            strokeWidth={isSelected ? 3.5 : 2}
-            lineDashPattern={isSelected ? undefined : [8, 4]}
-            tappable={false}
-          />
-        ));
-      } catch { return null; }
-    });
-  }, [sectors, boundaryVisible, selectedSector, selectedPrecinct, showSectors, colors]);
-
   return (
     <View style={styles.container}>
       <MapView
@@ -234,8 +180,38 @@ export default function MapScreen() {
         onLongPress={handleMapLongPress}
         userInterfaceStyle={isDark ? 'dark' : 'light'}
       >
-        {precinctPolygons}
-        {sectorPolygons}
+        {/* Red pin for searched address */}
+        {searchedLocation && (
+          <Marker
+            coordinate={searchedLocation}
+            title={searchedAddress || 'Searched Location'}
+            description={selectedPrecinct ? selectedPrecinct.name : undefined}
+            pinColor="#D32F2F"
+          />
+        )}
+
+        {/* Blue pin at tapped/selected location */}
+        {selectedPrecinct && !searchedLocation && tappedLocation && (
+          <Marker
+            coordinate={tappedLocation}
+            title={reverseAddress || selectedPrecinct.name}
+            description={selectedPrecinct.address}
+            pinColor={reverseAddress ? '#D32F2F' : '#2979FF'}
+          />
+        )}
+
+        {/* Blue pin at precinct building when selected from list */}
+        {selectedPrecinct && !searchedLocation && !tappedLocation && (
+          <Marker
+            coordinate={{
+              latitude: selectedPrecinct.centroidLat,
+              longitude: selectedPrecinct.centroidLng,
+            }}
+            title={selectedPrecinct.name}
+            description={selectedPrecinct.address}
+            pinColor="#2979FF"
+          />
+        )}
       </MapView>
 
       {/* My Location FAB */}
@@ -246,52 +222,6 @@ export default function MapScreen() {
         color={colors.accent}
         onPress={handleMyLocation}
       />
-
-      {/* Boundary Toggle — only visible when a precinct is selected */}
-      {boundaryVisible && selectedPrecinct && (
-        <View style={[styles.toggleCard, { top: insets.top + 12, backgroundColor: colors.surface }]}>
-          <TouchableOpacity
-            style={[
-              styles.toggleOption,
-              !showSectors && { backgroundColor: colors.accent },
-            ]}
-            onPress={() => setShowSectors(false)}
-            activeOpacity={0.7}
-          >
-            <MaterialCommunityIcons
-              name="vector-polygon"
-              size={14}
-              color={!showSectors ? '#fff' : colors.textTertiary}
-            />
-            <Text style={[
-              styles.toggleLabel,
-              { color: !showSectors ? '#fff' : colors.textTertiary },
-            ]}>
-              Precincts
-            </Text>
-          </TouchableOpacity>
-          <TouchableOpacity
-            style={[
-              styles.toggleOption,
-              showSectors && { backgroundColor: colors.mapSectorStroke },
-            ]}
-            onPress={() => setShowSectors(true)}
-            activeOpacity={0.7}
-          >
-            <MaterialCommunityIcons
-              name="vector-square"
-              size={14}
-              color={showSectors ? '#fff' : colors.textTertiary}
-            />
-            <Text style={[
-              styles.toggleLabel,
-              { color: showSectors ? '#fff' : colors.textTertiary },
-            ]}>
-              Sectors
-            </Text>
-          </TouchableOpacity>
-        </View>
-      )}
 
       {/* Bottom Info Sheet */}
       {selectedPrecinct && (
@@ -356,30 +286,5 @@ const styles = StyleSheet.create({
     right: 16,
     elevation: 4,
     borderRadius: 28,
-  },
-  toggleCard: {
-    position: 'absolute',
-    left: 16,
-    flexDirection: 'row',
-    borderRadius: 12,
-    padding: 3,
-    elevation: 4,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.15,
-    shadowRadius: 6,
-    gap: 2,
-  },
-  toggleOption: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    paddingHorizontal: 10,
-    paddingVertical: 7,
-    borderRadius: 10,
-    gap: 5,
-  },
-  toggleLabel: {
-    fontSize: 11,
-    fontWeight: '700',
   },
 });

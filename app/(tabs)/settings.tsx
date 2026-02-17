@@ -1,9 +1,9 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useCallback } from 'react';
 import { View, StyleSheet, ScrollView, Alert, TouchableOpacity } from 'react-native';
-import { Text, Switch, Divider } from 'react-native-paper';
+import { Text, Divider } from 'react-native-paper';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import { router } from 'expo-router';
+import { router, useFocusEffect } from 'expo-router';
 import { useAppContext } from '../../src/context/AppContext';
 import { Colors } from '../../src/theme';
 import { getAllFavorites, removeFavorite } from '../../src/db/repositories/favoriteRepository';
@@ -16,7 +16,6 @@ export default function SettingsScreen() {
   const {
     isDark, darkMode, setDarkModePreference,
     mapType, setMapTypePreference,
-    boundaryVisible, setBoundaryVisiblePreference,
     setSelectedPrecinct,
   } = useAppContext();
   const colors = isDark ? Colors.dark : Colors.light;
@@ -34,7 +33,7 @@ export default function SettingsScreen() {
     setFavorites(withNames);
   }, []);
 
-  useEffect(() => { loadFavs(); }, [loadFavs]);
+  useFocusEffect(useCallback(() => { loadFavs(); }, [loadFavs]));
 
   const goToFav = async (f: FavPlus) => {
     const p = await getPrecinctByNumber(f.precinctNum);
@@ -110,13 +109,6 @@ export default function SettingsScreen() {
           })}
         </View>
 
-        <View style={[styles.card, { backgroundColor: colors.cardBg, borderColor: colors.cardBorder, marginTop: 10 }]}>
-          <View style={styles.switchRow}>
-            <MaterialCommunityIcons name="vector-polygon" size={20} color={colors.textTertiary} style={{ marginRight: 10 }} />
-            <Text style={[styles.switchLabel, { color: colors.textPrimary }]}>Show Boundaries</Text>
-            <Switch value={boundaryVisible} onValueChange={setBoundaryVisiblePreference} color={colors.accent} />
-          </View>
-        </View>
 
         {/* ── Appearance ──────────────────────── */}
         <SectionLabel label="APPEARANCE" color={colors.textTertiary} />
@@ -141,7 +133,7 @@ export default function SettingsScreen() {
         <View style={[styles.card, { backgroundColor: colors.cardBg, borderColor: colors.cardBorder }]}>
           <InfoRow icon="information-outline" label="Version" value="1.0.0" colors={colors} />
           <Divider style={{ backgroundColor: colors.divider }} />
-          <InfoRow icon="database-outline" label="Data Source" value="NYC Open Data" colors={colors} />
+          <InfoRow icon="database-outline" label="Data Source" value="Google Maps" colors={colors} />
           <Divider style={{ backgroundColor: colors.divider }} />
           <InfoRow icon="shield-check-outline" label="Precincts" value="25 loaded" colors={colors} />
         </View>
