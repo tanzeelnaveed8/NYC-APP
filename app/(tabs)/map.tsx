@@ -1,16 +1,19 @@
 import React, { useState, useEffect, useCallback, useRef } from 'react';
 import { View, StyleSheet } from 'react-native';
-import MapView, { Marker, MapPressEvent, LongPressEvent, Region } from 'react-native-maps';
+import MapView, { Marker, Circle, Polygon, MapPressEvent, LongPressEvent, Region } from 'react-native-maps';
 import { Snackbar, Portal, Dialog, Button, TextInput as PaperInput, FAB, Text } from 'react-native-paper';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
+
 import * as Location from 'expo-location';
 import { useAppContext } from '../../src/context/AppContext';
 import { reverseGeocode, findNearbyNYPDPrecinct } from '../../src/services/nycApi';
 import { PrecinctInfoSheet } from '../../src/components/PrecinctInfoSheet';
-import { findPrecinctAtLocation, findSectorAtLocation, getPrecinctByNumber } from '../../src/db/repositories/precinctRepository';
+import { getAllPrecincts, findPrecinctAtLocation, getPrecinctByNumber } from '../../src/db/repositories/precinctRepository';
 import { isFavorited, upsertFavorite, removeFavorite } from '../../src/db/repositories/favoriteRepository';
 import { Colors } from '../../src/theme/colors';
-import type { LatLng } from '../../src/models';
+import type { LatLng, Precinct } from '../../src/models';
+import PRECINCT_PINS from '../../src/data/precinctLocations.json';
+import PRECINCT_BOUNDARIES from '../../src/data/precinctBoundaries.json';
 
 const NYC_CENTER: Region = {
   latitude: 40.7128,
@@ -21,9 +24,8 @@ const NYC_CENTER: Region = {
 
 export default function MapScreen() {
   const {
-    isDark, mapType,
+    isDark, mapType, boundaryVisible,
     selectedPrecinct, setSelectedPrecinct,
-    selectedSector, setSelectedSector,
     searchedAddress, setSearchedAddress,
     searchedLocation, setSearchedLocation,
   } = useAppContext();
@@ -31,6 +33,7 @@ export default function MapScreen() {
   const insets = useSafeAreaInsets();
   const mapRef = useRef<MapView>(null);
 
+  const [dbPrecincts, setDbPrecincts] = useState<Precinct[]>([]);
   const [isFav, setIsFav] = useState(false);
   const [snackMessage, setSnackMessage] = useState('');
   const [reverseAddress, setReverseAddress] = useState<string | null>(null);
@@ -38,7 +41,26 @@ export default function MapScreen() {
   const [favDialogVisible, setFavDialogVisible] = useState(false);
   const [favLabel, setFavLabel] = useState('');
 
-  // Load favorite status when precinct selected
+  useEffect(() => {
+    (async () => {
+      const pcts = await getAllPrecincts();
+      setDbPrecincts(pcts);
+    })();
+  }, []);
+
+  const mapPins = React.useMemo(() => {
+    const dbMap = new Map(dbPrecincts.map(p => [p.precinctNum, p]));
+    return PRECINCT_PINS.map(pin => {
+      const db = dbMap.get(pin.num);
+      return {
+        num: pin.num,
+        lat: db?.centroidLat || pin.lat,
+        lng: db?.centroidLng || pin.lng,
+      };
+    });
+  }, [dbPrecincts]);
+
+
   useEffect(() => {
     if (selectedPrecinct) {
       (async () => {
@@ -51,31 +73,33 @@ export default function MapScreen() {
     }
   }, [selectedPrecinct]);
 
-  // Animate to searched location or selected precinct
   useEffect(() => {
-    if (!mapRef.current) return;
-    if (searchedLocation) {
-      mapRef.current.animateToRegion({
+    if (!mapRef.current || !searchedLocation) return;
+    const t = setTimeout(() => {
+      mapRef.current?.animateToRegion({
         latitude: searchedLocation.latitude,
         longitude: searchedLocation.longitude,
-        latitudeDelta: 0.015,
-        longitudeDelta: 0.015,
+        latitudeDelta: 0.008,
+        longitudeDelta: 0.008,
       }, 600);
-    } else if (selectedPrecinct) {
-      mapRef.current.animateToRegion({
-        latitude: selectedPrecinct.centroidLat,
-        longitude: selectedPrecinct.centroidLng,
-        latitudeDelta: 0.025,
-        longitudeDelta: 0.025,
-      }, 600);
-    }
-  }, [selectedPrecinct, searchedLocation]);
+    }, 300);
+    return () => clearTimeout(t);
+  }, [searchedLocation]);
+
+  useEffect(() => {
+    if (!mapRef.current || !selectedPrecinct || searchedLocation) return;
+    mapRef.current.animateToRegion({
+      latitude: selectedPrecinct.centroidLat,
+      longitude: selectedPrecinct.centroidLng,
+      latitudeDelta: 0.025,
+      longitudeDelta: 0.025,
+    }, 600);
+  }, [selectedPrecinct]);
 
   const handleMapPress = useCallback(async (e: MapPressEvent) => {
     const { latitude, longitude } = e.nativeEvent.coordinate;
     const point: LatLng = { latitude, longitude };
 
-    // Ask Google which precinct covers this point
     let precinct = null;
     const nearbyNum = await findNearbyNYPDPrecinct(latitude, longitude);
     if (nearbyNum) {
@@ -86,12 +110,11 @@ export default function MapScreen() {
     }
 
     setSelectedPrecinct(precinct);
-    setSelectedSector(null);
     setTappedLocation(precinct ? point : null);
     setReverseAddress(null);
     setSearchedAddress(null);
     setSearchedLocation(null);
-  }, [setSelectedPrecinct, setSelectedSector, setSearchedAddress, setSearchedLocation]);
+  }, [setSelectedPrecinct, setSearchedAddress, setSearchedLocation]);
 
   const handleMapLongPress = useCallback(async (e: LongPressEvent) => {
     const { latitude, longitude } = e.nativeEvent.coordinate;
@@ -107,7 +130,6 @@ export default function MapScreen() {
     }
 
     setSelectedPrecinct(precinct);
-    setSelectedSector(null);
     setTappedLocation(point);
     try {
       const address = await reverseGeocode(latitude, longitude);
@@ -115,7 +137,7 @@ export default function MapScreen() {
     } catch {
       setReverseAddress('Unable to resolve address');
     }
-  }, [setSelectedPrecinct, setSelectedSector]);
+  }, [setSelectedPrecinct]);
 
   const handleToggleFavorite = useCallback(async () => {
     if (!selectedPrecinct) return;
@@ -140,12 +162,11 @@ export default function MapScreen() {
 
   const handleClose = useCallback(() => {
     setSelectedPrecinct(null);
-    setSelectedSector(null);
     setTappedLocation(null);
     setReverseAddress(null);
     setSearchedAddress(null);
     setSearchedLocation(null);
-  }, [setSelectedPrecinct, setSelectedSector, setSearchedAddress, setSearchedLocation]);
+  }, [setSelectedPrecinct, setSearchedAddress, setSearchedLocation]);
 
   const handleMyLocation = useCallback(async () => {
     try {
@@ -162,6 +183,22 @@ export default function MapScreen() {
   }, []);
 
   const mapTypeValue = mapType === 'satellite' ? 'satellite' : mapType === 'terrain' ? 'terrain' : 'standard';
+
+  const handleMarkerPress = useCallback(async (num: number) => {
+    const pct = await getPrecinctByNumber(num);
+    if (pct) {
+      setSelectedPrecinct(pct);
+      setTappedLocation(null);
+      setReverseAddress(null);
+      setSearchedAddress(null);
+      setSearchedLocation(null);
+    }
+  }, [setSelectedPrecinct, setSearchedAddress, setSearchedLocation]);
+
+  const precinctCoord = selectedPrecinct ? {
+    latitude: selectedPrecinct.centroidLat,
+    longitude: selectedPrecinct.centroidLng,
+  } : null;
 
   return (
     <View style={styles.container}>
@@ -180,36 +217,74 @@ export default function MapScreen() {
         onLongPress={handleMapLongPress}
         userInterfaceStyle={isDark ? 'dark' : 'light'}
       >
-        {/* Red pin for searched address */}
+        {/* ── Precinct boundaries ── */}
+        {boundaryVisible && Object.entries(PRECINCT_BOUNDARIES).map(([num, coords]) => {
+          const pNum = parseInt(num);
+          const isSelected = selectedPrecinct?.precinctNum === pNum;
+          return (
+            <Polygon
+              key={`boundary-${num}`}
+              coordinates={coords as {latitude: number; longitude: number}[]}
+              fillColor={isSelected ? 'rgba(211, 47, 47, 0.20)' : 'rgba(211, 47, 47, 0.05)'}
+              strokeColor={isSelected ? 'rgba(211, 47, 47, 0.9)' : 'rgba(211, 47, 47, 0.4)'}
+              strokeWidth={isSelected ? 2.5 : 1}
+              tappable
+              onPress={() => handleMarkerPress(pNum)}
+            />
+          );
+        })}
+
+        {/* ── Selected precinct highlight ── */}
+        {selectedPrecinct && (() => {
+          const pin = mapPins.find(p => p.num === selectedPrecinct.precinctNum);
+          if (!pin) return null;
+          const coord = { latitude: pin.lat, longitude: pin.lng };
+          return (
+            <>
+              <Circle
+                center={coord}
+                radius={120}
+                fillColor="rgba(211, 47, 47, 0.08)"
+                strokeColor="rgba(211, 47, 47, 0.20)"
+                strokeWidth={1}
+              />
+              <Circle
+                center={coord}
+                radius={60}
+                fillColor="rgba(211, 47, 47, 0.15)"
+                strokeColor="rgba(211, 47, 47, 0.35)"
+                strokeWidth={1.5}
+              />
+              <Marker
+                coordinate={coord}
+                onPress={() => handleMarkerPress(pin.num)}
+                pinColor="red"
+                title={`Precinct ${pin.num}`}
+              />
+            </>
+          );
+        })()}
+
+        {/* ── Searched address pin ── */}
         {searchedLocation && (
           <Marker
-            coordinate={searchedLocation}
+            coordinate={{
+              latitude: searchedLocation.latitude,
+              longitude: searchedLocation.longitude,
+            }}
             title={searchedAddress || 'Searched Location'}
             description={selectedPrecinct ? selectedPrecinct.name : undefined}
-            pinColor="#D32F2F"
+            pinColor="violet"
           />
         )}
 
-        {/* Blue pin at tapped/selected location */}
-        {selectedPrecinct && !searchedLocation && tappedLocation && (
+        {/* ── Tapped location pin ── */}
+        {selectedPrecinct && !searchedLocation && tappedLocation &&
+          tappedLocation.latitude !== selectedPrecinct.centroidLat && (
           <Marker
             coordinate={tappedLocation}
-            title={reverseAddress || selectedPrecinct.name}
-            description={selectedPrecinct.address}
-            pinColor={reverseAddress ? '#D32F2F' : '#2979FF'}
-          />
-        )}
-
-        {/* Blue pin at precinct building when selected from list */}
-        {selectedPrecinct && !searchedLocation && !tappedLocation && (
-          <Marker
-            coordinate={{
-              latitude: selectedPrecinct.centroidLat,
-              longitude: selectedPrecinct.centroidLng,
-            }}
-            title={selectedPrecinct.name}
-            description={selectedPrecinct.address}
-            pinColor="#2979FF"
+            title={reverseAddress || 'Tapped Location'}
+            pinColor="orange"
           />
         )}
       </MapView>
@@ -228,7 +303,6 @@ export default function MapScreen() {
         <View style={[styles.sheetContainer, { paddingBottom: 0 }]}>
           <PrecinctInfoSheet
             precinct={selectedPrecinct}
-            sector={selectedSector}
             reverseAddress={reverseAddress}
             searchedAddress={searchedAddress}
             onClose={handleClose}
@@ -287,4 +361,5 @@ const styles = StyleSheet.create({
     elevation: 4,
     borderRadius: 28,
   },
+
 });

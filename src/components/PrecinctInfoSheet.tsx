@@ -1,15 +1,15 @@
-import React, { useState } from 'react';
+import React, { useState, useMemo } from 'react';
 import { View, StyleSheet, Linking, Platform } from 'react-native';
 import { Text, IconButton, Divider, Snackbar } from 'react-native-paper';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import * as Clipboard from 'expo-clipboard';
-import type { Precinct, Sector } from '../models';
+import type { Precinct } from '../models';
+import type { DayHours } from '../services/nycApi';
 import { Colors, getBoroughColor } from '../theme/colors';
 import { useAppContext } from '../context/AppContext';
 
 interface Props {
   precinct: Precinct;
-  sector?: Sector | null;
   reverseAddress?: string | null;
   searchedAddress?: string | null;
   onClose?: () => void;
@@ -17,11 +17,27 @@ interface Props {
   onToggleFavorite?: () => void;
 }
 
-export function PrecinctInfoSheet({ precinct, sector, reverseAddress, searchedAddress, onClose, isFavorited, onToggleFavorite }: Props) {
+export function PrecinctInfoSheet({ precinct, reverseAddress, searchedAddress, onClose, isFavorited, onToggleFavorite }: Props) {
   const { isDark } = useAppContext();
   const colors = isDark ? Colors.dark : Colors.light;
   const [copySnack, setCopySnack] = useState(false);
+  const [showHours, setShowHours] = useState(false);
   const boroughColor = getBoroughColor(precinct.borough, colors);
+
+  const openingHours: DayHours[] = useMemo(() => {
+    try {
+      const parsed = JSON.parse(precinct.openingHoursJson || '[]');
+      return Array.isArray(parsed) && parsed.length > 0 ? parsed : [];
+    } catch {
+      return [];
+    }
+  }, [precinct.openingHoursJson]);
+
+  const todayStatus = useMemo(() => {
+    if (openingHours.length === 0) return null;
+    const dayIndex = new Date().getDay(); // 0=Sun
+    return openingHours[dayIndex] || null;
+  }, [openingHours]);
 
   const handleCall = () => {
     const phoneNum = precinct.phone.replace(/[^0-9+]/g, '');
@@ -91,9 +107,8 @@ export function PrecinctInfoSheet({ precinct, sector, reverseAddress, searchedAd
         </View>
       )}
 
-      {/* Precinct & Sector info cards */}
+      {/* Precinct info card */}
       <View style={styles.labeledInfoSection}>
-        {/* Precinct card */}
         <View style={[styles.labeledInfoCard, { backgroundColor: `${colors.accent}14`, borderColor: `${colors.accent}30` }]}>
           <View style={[styles.labeledInfoIconRow]}>
             <MaterialCommunityIcons name="shield-outline" size={16} color={colors.accent} />
@@ -102,23 +117,6 @@ export function PrecinctInfoSheet({ precinct, sector, reverseAddress, searchedAd
           <Text style={[styles.labeledInfoValue, { color: colors.accent }]}>{precinct.precinctNum}</Text>
           <Text style={[styles.labeledInfoName, { color: colors.textSecondary }]} numberOfLines={1}>
             {precinct.name}
-          </Text>
-        </View>
-
-        {/* Sector card */}
-        <View style={[
-          styles.labeledInfoCard,
-          { backgroundColor: sector ? 'rgba(255,152,0,0.08)' : `${colors.outline}15`, borderColor: sector ? 'rgba(255,152,0,0.20)' : `${colors.outline}25` },
-        ]}>
-          <View style={styles.labeledInfoIconRow}>
-            <MaterialCommunityIcons name="vector-square" size={16} color={sector ? '#F57C00' : colors.textTertiary} />
-            <Text style={[styles.labeledInfoLabel, { color: colors.textTertiary }]}>SECTOR</Text>
-          </View>
-          <Text style={[styles.labeledInfoValue, { color: sector ? '#F57C00' : colors.textTertiary }]}>
-            {sector ? sector.sectorId : '—'}
-          </Text>
-          <Text style={[styles.labeledInfoName, { color: colors.textTertiary }]} numberOfLines={1}>
-            {sector ? `Precinct ${sector.precinctNum}` : 'Not identified'}
           </Text>
         </View>
       </View>
@@ -151,6 +149,59 @@ export function PrecinctInfoSheet({ precinct, sector, reverseAddress, searchedAd
         <ActionButton icon="navigation-variant" label="Navigate" color="#2979FF" bgColor="rgba(41,121,255,0.1)" onPress={handleNavigate} />
         <ActionButton icon="content-copy" label="Copy" color="#2979FF" bgColor="rgba(41,121,255,0.1)" onPress={handleCopy} />
       </View>
+
+      {/* Opening Hours */}
+      {openingHours.length > 0 && (
+        <>
+          <Divider style={{ backgroundColor: colors.divider, marginVertical: 12 }} />
+          <View style={styles.hoursHeader}>
+            <View style={styles.hoursHeaderLeft}>
+              <MaterialCommunityIcons name="clock-outline" size={16} color={colors.textTertiary} />
+              <Text style={[styles.hoursTitle, { color: colors.textPrimary }]}>Opening Hours</Text>
+              {todayStatus && (
+                <View style={[styles.statusBadge, { backgroundColor: todayStatus.isOpen ? 'rgba(76,175,80,0.12)' : 'rgba(211,47,47,0.12)' }]}>
+                  <View style={[styles.statusDot, { backgroundColor: todayStatus.isOpen ? '#4CAF50' : '#D32F2F' }]} />
+                  <Text style={[styles.statusText, { color: todayStatus.isOpen ? '#4CAF50' : '#D32F2F' }]}>
+                    {todayStatus.isOpen ? 'Open' : 'Closed'}
+                  </Text>
+                </View>
+              )}
+            </View>
+            <IconButton
+              icon={showHours ? 'chevron-up' : 'chevron-down'}
+              iconColor={colors.textTertiary}
+              size={18}
+              onPress={() => setShowHours(!showHours)}
+              style={{ margin: 0 }}
+            />
+          </View>
+          {showHours && (
+            <View style={[styles.hoursCard, { backgroundColor: isDark ? colors.surfaceVariant : '#F8F9FA', borderColor: colors.cardBorder }]}>
+              {openingHours.map((dh, i) => {
+                const isToday = new Date().getDay() === i;
+                return (
+                  <View key={i} style={[styles.hoursRow, isToday && styles.hoursRowToday, isToday && { backgroundColor: `${colors.accent}10` }]}>
+                    <View style={styles.hoursDayCol}>
+                      <View style={[styles.hoursDot, { backgroundColor: dh.isOpen ? '#4CAF50' : '#D32F2F' }]} />
+                      <Text style={[styles.hoursDayText, { color: isToday ? colors.accent : colors.textPrimary }, isToday && { fontWeight: '800' }]}>
+                        {dh.day.substring(0, 3)}
+                      </Text>
+                    </View>
+                    <Text style={[styles.hoursTimeText, { color: dh.isOpen ? colors.textSecondary : '#D32F2F' }, isToday && { fontWeight: '700', color: isToday ? colors.accent : undefined }]}>
+                      {dh.hours}
+                    </Text>
+                    {isToday && (
+                      <View style={[styles.todayIndicator, { backgroundColor: colors.accent }]}>
+                        <Text style={styles.todayIndicatorText}>TODAY</Text>
+                      </View>
+                    )}
+                  </View>
+                );
+              })}
+            </View>
+          )}
+        </>
+      )}
 
       <Snackbar visible={copySnack} onDismiss={() => setCopySnack(false)} duration={1500}>
         Address copied to clipboard
@@ -319,5 +370,84 @@ const styles = StyleSheet.create({
   actionLabel: {
     fontSize: 11,
     fontWeight: '700',
+  },
+  hoursHeader: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+  },
+  hoursHeaderLeft: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 8,
+  },
+  hoursTitle: {
+    fontSize: 14,
+    fontWeight: '700',
+  },
+  statusBadge: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 4,
+    paddingHorizontal: 8,
+    paddingVertical: 3,
+    borderRadius: 10,
+  },
+  statusDot: {
+    width: 6,
+    height: 6,
+    borderRadius: 3,
+  },
+  statusText: {
+    fontSize: 10,
+    fontWeight: '700',
+  },
+  hoursCard: {
+    marginTop: 8,
+    borderRadius: 12,
+    borderWidth: 1,
+    overflow: 'hidden',
+  },
+  hoursRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    paddingHorizontal: 12,
+    paddingVertical: 9,
+  },
+  hoursRowToday: {
+    borderRadius: 8,
+    marginHorizontal: 2,
+    marginVertical: 1,
+  },
+  hoursDayCol: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 8,
+    width: 60,
+  },
+  hoursDot: {
+    width: 7,
+    height: 7,
+    borderRadius: 3.5,
+  },
+  hoursDayText: {
+    fontSize: 13,
+    fontWeight: '600',
+  },
+  hoursTimeText: {
+    fontSize: 12,
+    fontWeight: '500',
+    flex: 1,
+  },
+  todayIndicator: {
+    paddingHorizontal: 6,
+    paddingVertical: 2,
+    borderRadius: 6,
+  },
+  todayIndicatorText: {
+    fontSize: 8,
+    fontWeight: '800',
+    color: '#fff',
+    letterSpacing: 0.5,
   },
 });

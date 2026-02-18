@@ -10,7 +10,8 @@ export const TABLE_STATEMENTS: string[] = [
     boundaryJson TEXT NOT NULL,
     centroidLat REAL NOT NULL,
     centroidLng REAL NOT NULL,
-    boundingBoxJson TEXT NOT NULL
+    boundingBoxJson TEXT NOT NULL,
+    openingHoursJson TEXT NOT NULL DEFAULT '[]'
   )`,
 
   `CREATE TABLE IF NOT EXISTS sectors (

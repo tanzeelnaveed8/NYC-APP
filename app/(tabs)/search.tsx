@@ -209,31 +209,6 @@ export default function SearchScreen() {
       {hasQuery ? (
         results.length > 0 ? (
           <View style={{ flex: 1 }}>
-            {/* Address search card */}
-            <TouchableOpacity
-              style={[styles.addressSearchCard, { backgroundColor: isDark ? colors.surfaceVariant : '#EEF4FF', borderColor: isDark ? colors.accent + '30' : colors.accent + '25' }]}
-              onPress={handleAddressSearch}
-              activeOpacity={0.7}
-              disabled={geocoding}
-            >
-              <View style={[styles.addressSearchIcon, { backgroundColor: isDark ? colors.accent + '20' : colors.accent + '15' }]}>
-                {geocoding ? (
-                  <ActivityIndicator size="small" color={colors.accent} />
-                ) : (
-                  <FontAwesome5 name="map-pin" size={14} color={colors.accent} />
-                )}
-              </View>
-              <View style={{ flex: 1 }}>
-                <Text style={[styles.addressSearchTitle, { color: colors.accent }]}>
-                  {geocoding ? 'Searching...' : 'Find precinct for this address'}
-                </Text>
-                <Text style={[styles.addressSearchSub, { color: colors.textTertiary }]} numberOfLines={1}>
-                  Search "{query.trim()}" as an NYC address
-                </Text>
-              </View>
-              <FontAwesome5 name="arrow-right" size={12} color={colors.accent} />
-            </TouchableOpacity>
-
             {/* Results count */}
             <View style={[styles.countBar, { backgroundColor: isDark ? colors.surfaceVariant : '#E3EDF5' }]}>
               <FontAwesome5 name="check-circle" size={12} color={colors.accent} />

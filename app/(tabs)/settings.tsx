@@ -1,5 +1,5 @@
 import React, { useState, useCallback } from 'react';
-import { View, StyleSheet, ScrollView, Alert, TouchableOpacity } from 'react-native';
+import { View, StyleSheet, ScrollView, Alert, TouchableOpacity, Switch } from 'react-native';
 import { Text, Divider } from 'react-native-paper';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
@@ -16,6 +16,7 @@ export default function SettingsScreen() {
   const {
     isDark, darkMode, setDarkModePreference,
     mapType, setMapTypePreference,
+    boundaryVisible, setBoundaryVisiblePreference,
     setSelectedPrecinct,
   } = useAppContext();
   const colors = isDark ? Colors.dark : Colors.light;
@@ -109,6 +110,19 @@ export default function SettingsScreen() {
           })}
         </View>
 
+        {/* ── Boundaries Toggle ──────────────── */}
+        <View style={[styles.card, { backgroundColor: colors.cardBg, borderColor: colors.cardBorder, flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', marginTop: 10 }]}>
+          <View style={{ flexDirection: 'row', alignItems: 'center', gap: 10 }}>
+            <MaterialCommunityIcons name="vector-polygon" size={20} color={colors.accent} />
+            <Text style={{ color: colors.textPrimary, fontSize: 14, fontWeight: '600' }}>Precinct Boundaries</Text>
+          </View>
+          <Switch
+            value={boundaryVisible}
+            onValueChange={setBoundaryVisiblePreference}
+            trackColor={{ false: colors.outline, true: colors.accent + '60' }}
+            thumbColor={boundaryVisible ? colors.accent : '#ccc'}
+          />
+        </View>
 
         {/* ── Appearance ──────────────────────── */}
         <SectionLabel label="APPEARANCE" color={colors.textTertiary} />

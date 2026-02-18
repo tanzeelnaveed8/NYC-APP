@@ -4,6 +4,12 @@ const GOOGLE_MAPS_KEY = 'AIzaSyAy6Un1PzgY5BgUNwgbch9dES5yE9En96I';
 
 // ─── Types ───────────────────────────────────────────────────────────────────
 
+export interface DayHours {
+  day: string;       // "Monday", "Tuesday", etc.
+  hours: string;     // "Open 24 hours", "9:00 AM – 5:00 PM", "Closed"
+  isOpen: boolean;
+}
+
 export interface GooglePrecinctInfo {
   precinctNum: number;
   name: string;
@@ -12,6 +18,7 @@ export interface GooglePrecinctInfo {
   borough: Borough;
   latitude: number;
   longitude: number;
+  openingHours: DayHours[];
 }
 
 // ─── Precinct Details (Google Maps Places API) ──────────────────────────────
@@ -108,16 +115,17 @@ async function searchAndCollect(
     if (resultMap.has(precinctNum)) continue;
 
     const borough = detectBorough(place.formatted_address, defaultBorough);
-    const phone = await fetchPlacePhone(place.place_id);
+    const details = await fetchPlaceDetails(place.place_id);
 
     resultMap.set(precinctNum, {
       precinctNum,
       name: place.name,
       address: cleanAddress(place.formatted_address),
-      phone: phone || '',
+      phone: details.phone || '',
       borough,
       latitude: place.geometry?.location?.lat ?? 0,
       longitude: place.geometry?.location?.lng ?? 0,
+      openingHours: details.openingHours,
     });
   }
 
@@ -128,25 +136,74 @@ async function searchAndCollect(
   }
 }
 
-/**
- * Fetch phone number via Google Place Details API.
- */
-async function fetchPlacePhone(placeId: string): Promise<string> {
+interface PlaceDetailsResult {
+  phone: string;
+  openingHours: DayHours[];
+}
+
+const DAY_NAMES = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+const DEFAULT_HOURS: DayHours[] = DAY_NAMES.map(day => ({ day, hours: 'Open 24 hours', isOpen: true }));
+
+async function fetchPlaceDetails(placeId: string): Promise<PlaceDetailsResult> {
   try {
     const params = new URLSearchParams({
       place_id: placeId,
-      fields: 'formatted_phone_number',
+      fields: 'formatted_phone_number,opening_hours',
       key: GOOGLE_MAPS_KEY,
     });
 
     const url = `https://maps.googleapis.com/maps/api/place/details/json?${params.toString()}`;
     const response = await fetch(url);
-    if (!response.ok) return '';
+    if (!response.ok) {
+      console.warn(`[nycApi] Place Details HTTP ${response.status} for ${placeId}`);
+      return { phone: '', openingHours: DEFAULT_HOURS };
+    }
 
     const data = await response.json();
-    return data.result?.formatted_phone_number || '';
+    const phone = data.result?.formatted_phone_number || '';
+    const openingHours = parseOpeningHours(data.result?.opening_hours);
+
+    return { phone, openingHours };
+  } catch (err) {
+    console.warn(`[nycApi] Place Details failed for ${placeId}:`, err);
+    return { phone: '', openingHours: DEFAULT_HOURS };
+  }
+}
+
+function parseOpeningHours(oh: any): DayHours[] {
+  if (!oh) {
+    return [...DEFAULT_HOURS];
+  }
+
+  try {
+    const weekdayText: string[] = oh.weekday_text || [];
+    const periods: any[] = oh.periods || [];
+
+    if (weekdayText.length > 0) {
+      const parsed: DayHours[] = [];
+      for (const line of weekdayText) {
+        const colonIdx = line.indexOf(':');
+        if (colonIdx === -1) continue;
+        const day = line.substring(0, colonIdx).trim();
+        const hours = line.substring(colonIdx + 1).trim();
+        const isClosed = hours.toLowerCase() === 'closed';
+        parsed.push({ day, hours: isClosed ? 'Closed' : hours, isOpen: !isClosed });
+      }
+      // weekday_text starts with Monday; reorder to start with Sunday
+      if (parsed.length === 7) {
+        const sunday = parsed.pop()!;
+        parsed.unshift(sunday);
+      }
+      if (parsed.length > 0) return parsed;
+    }
+
+    if (periods.length === 1 && !periods[0].close) {
+      return [...DEFAULT_HOURS];
+    }
+
+    return DAY_NAMES.map(day => ({ day, hours: 'Hours unavailable', isOpen: true }));
   } catch {
-    return '';
+    return [...DEFAULT_HOURS];
   }
 }
 

@@ -58,7 +58,7 @@ export async function performInitialDataLoad(
 
 // ─── Version Management ──────────────────────────────────────────────────────
 
-const PRECINCT_VERSION = '10.0.0';
+const PRECINCT_VERSION = '11.0.0';
 
 async function upgradePrecinctsIfNeeded(
   onProgress?: (p: LoadProgress) => void
@@ -189,6 +189,29 @@ async function seedLawLibrary(): Promise<void> {
   }
 }
 
+/**
+ * Force refresh precinct data from Google Maps (includes opening hours).
+ * Can be called from UI to re-fetch without clearing the entire DB.
+ */
+export async function refreshPrecinctData(
+  onProgress?: (p: LoadProgress) => void
+): Promise<void> {
+  const db = await getDatabase();
+  onProgress?.({ stage: 'Clearing old precinct data...', progress: 0.1 });
+  await db.runAsync('DELETE FROM sectors');
+  await db.runAsync('DELETE FROM precincts');
+
+  await seedPrecinctDataFromGoogle(onProgress);
+
+  const count = await db.getFirstAsync<{ cnt: number }>('SELECT COUNT(*) as cnt FROM precincts');
+  if (!count || count.cnt === 0) {
+    throw new Error('No precincts loaded from Google Maps API');
+  }
+
+  await setDataVersion('precincts', PRECINCT_VERSION);
+  onProgress?.({ stage: 'Complete!', progress: 1.0 });
+}
+
 // ─── Precinct Data from Google Maps API ──────────────────────────────────────
 
 async function seedPrecinctDataFromGoogle(
@@ -210,6 +233,7 @@ async function seedPrecinctDataFromGoogle(
       centroidLat: info.latitude,
       centroidLng: info.longitude,
       boundingBoxJson: '[]',
+      openingHoursJson: JSON.stringify(info.openingHours || []),
     };
 
     await insertPrecinct(precinct);

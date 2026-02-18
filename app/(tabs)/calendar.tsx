@@ -5,10 +5,13 @@ import { FontAwesome5 } from '@expo/vector-icons';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useAppContext } from '../../src/context/AppContext';
 import { Colors } from '../../src/theme';
-import { getAllSquads, getScheduleForSquad, computeMonthSchedule } from '../../src/db/repositories/calendarRepository';
-import type { Squad, RdoSchedule } from '../../src/models';
+import { getAllPrecincts } from '../../src/db/repositories/precinctRepository';
+import { refreshPrecinctData } from '../../src/services/dataLoader';
+import type { Precinct } from '../../src/models';
+import type { DayHours } from '../../src/services/nycApi';
 
 const WEEKDAYS = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+const DAY_NAMES = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
 const MONTHS = [
   'January', 'February', 'March', 'April', 'May', 'June',
   'July', 'August', 'September', 'October', 'November', 'December',
@@ -19,45 +22,116 @@ export default function CalendarScreen() {
   const colors = isDark ? Colors.dark : Colors.light;
   const insets = useSafeAreaInsets();
 
-  const [squads, setSquads] = useState<Squad[]>([]);
-  const [selectedSquadId, setSelectedSquadId] = useState(1);
-  const [schedule, setSchedule] = useState<RdoSchedule | null>(null);
+  const [precincts, setPrecincts] = useState<Precinct[]>([]);
+  const [selectedPrecinctNum, setSelectedPrecinctNum] = useState<number | null>(null);
   const [currentDate, setCurrentDate] = useState(new Date());
+  const [selectedDay, setSelectedDay] = useState<number | null>(null);
+  const [refreshing, setRefreshing] = useState(false);
 
   const year = currentDate.getFullYear();
   const month = currentDate.getMonth();
 
+  // Load precincts from DB
   useEffect(() => {
     (async () => {
-      const data = await getAllSquads();
-      setSquads(data);
-      if (data.length > 0) {
-        const sched = await getScheduleForSquad(data[0].squadId);
-        setSchedule(sched);
+      const pcts = await getAllPrecincts();
+      setPrecincts(pcts);
+      if (pcts.length > 0) {
+        setSelectedPrecinctNum(prev => prev ?? pcts[0].precinctNum);
+      }
+
+      // Auto-refresh if first precinct has no hours data
+      const firstWithHours = pcts.find(p => {
+        try {
+          const h = JSON.parse(p.openingHoursJson || '[]');
+          return Array.isArray(h) && h.length > 0;
+        } catch { return false; }
+      });
+      if (pcts.length > 0 && !firstWithHours && !refreshing) {
+        doRefresh();
       }
     })();
   }, []);
 
-  useEffect(() => {
-    let cancelled = false;
-    const timer = setTimeout(async () => {
-      const sched = await getScheduleForSquad(selectedSquadId);
-      if (!cancelled) setSchedule(sched);
-    }, 80);
-    return () => { cancelled = true; clearTimeout(timer); };
-  }, [selectedSquadId]);
+  async function doRefresh() {
+    setRefreshing(true);
+    try {
+      await refreshPrecinctData();
+      const freshPcts = await getAllPrecincts();
+      setPrecincts(freshPcts);
+      if (freshPcts.length > 0) {
+        setSelectedPrecinctNum(prev => prev ?? freshPcts[0].precinctNum);
+      }
+    } catch (err) {
+      console.warn('[Calendar] Refresh failed:', err);
+    } finally {
+      setRefreshing(false);
+    }
+  }
 
-  const monthSchedule = useMemo(() => {
-    if (!schedule) return {};
-    return computeMonthSchedule(year, month, schedule);
-  }, [schedule, year, month]);
+  // Auto-select today when switching months
+  useEffect(() => {
+    const t = new Date();
+    if (t.getFullYear() === year && t.getMonth() === month) {
+      setSelectedDay(t.getDate());
+    } else {
+      setSelectedDay(1);
+    }
+  }, [year, month]);
+
+  const selectedPrecinct = useMemo(() => {
+    return precincts.find(p => p.precinctNum === selectedPrecinctNum) || null;
+  }, [precincts, selectedPrecinctNum]);
+
+  const precinctHours: DayHours[] = useMemo(() => {
+    if (!selectedPrecinct) return [];
+    try {
+      const parsed = JSON.parse(selectedPrecinct.openingHoursJson || '[]');
+      return Array.isArray(parsed) && parsed.length > 0 ? parsed : [];
+    } catch {
+      return [];
+    }
+  }, [selectedPrecinct]);
+
+  const hasHoursData = precinctHours.length > 0;
+
+  const precinctMonthSchedule = useMemo(() => {
+    const result: Record<number, { isOpen: boolean; hours: string }> = {};
+    if (!hasHoursData) return result;
+    const daysInMonth = new Date(year, month + 1, 0).getDate();
+    for (let day = 1; day <= daysInMonth; day++) {
+      const dayOfWeek = new Date(year, month, day).getDay();
+      const dh = precinctHours[dayOfWeek];
+      if (dh) {
+        result[day] = { isOpen: dh.isOpen, hours: dh.hours };
+      }
+    }
+    return result;
+  }, [precinctHours, hasHoursData, year, month]);
+
+  const daysInMonth = new Date(year, month + 1, 0).getDate();
 
   const stats = useMemo(() => {
-    const days = Object.values(monthSchedule);
-    const rdo = days.filter(Boolean).length;
-    const duty = days.filter(d => !d).length;
-    return { rdo, duty, total: days.length };
-  }, [monthSchedule]);
+    if (!hasHoursData) return { open: 0, closed: 0, total: daysInMonth };
+    const entries = Object.values(precinctMonthSchedule);
+    const open = entries.filter(e => e.isOpen).length;
+    const closed = entries.filter(e => !e.isOpen).length;
+    return { open, closed, total: entries.length };
+  }, [precinctMonthSchedule, hasHoursData, daysInMonth]);
+
+  // Selected day detail
+  const selectedDayInfo = useMemo(() => {
+    if (selectedDay === null) return null;
+    const dayOfWeek = new Date(year, month, selectedDay).getDay();
+    const pInfo = precinctMonthSchedule[selectedDay];
+    return {
+      dayName: DAY_NAMES[dayOfWeek],
+      dayShort: WEEKDAYS[dayOfWeek],
+      date: `${MONTHS[month]} ${selectedDay}, ${year}`,
+      isOpen: pInfo?.isOpen ?? true,
+      hours: pInfo?.hours || (hasHoursData ? 'No data' : 'Hours not loaded yet'),
+    };
+  }, [selectedDay, precinctMonthSchedule, hasHoursData, year, month]);
 
   const navigateMonth = useCallback((delta: number) => {
     setCurrentDate(prev => {
@@ -85,8 +159,8 @@ export default function CalendarScreen() {
   const today = new Date();
   const isCurrentMonth = today.getFullYear() === year && today.getMonth() === month;
 
-  const DUTY_COLOR = '#2979FF';
-  const RDO_COLOR = '#D32F2F';
+  const OPEN_COLOR = '#4CAF50';
+  const CLOSED_COLOR = '#D32F2F';
   const TODAY_RING = '#2979FF';
 
   return (
@@ -98,9 +172,9 @@ export default function CalendarScreen() {
             <FontAwesome5 name="calendar-alt" size={16} color="#fff" />
           </View>
           <View style={{ flex: 1, marginLeft: 12 }}>
-            <Text style={styles.headerTitle}>RDO Calendar</Text>
+            <Text style={styles.headerTitle}>Precinct Hours</Text>
             <Text style={styles.headerSub}>
-              {schedule?.patternType === 'steady' ? 'Steady' : '15-Day Rotating'} Schedule
+              {selectedPrecinct ? selectedPrecinct.name : 'Select a precinct'}
             </Text>
           </View>
           <TouchableOpacity
@@ -115,20 +189,20 @@ export default function CalendarScreen() {
       </View>
 
       <ScrollView style={{ flex: 1 }} showsVerticalScrollIndicator={false}>
-        {/* ── Squad Selector ───────────────── */}
+        {/* ── Precinct Selector ───────────── */}
         <ScrollView
           horizontal
           showsHorizontalScrollIndicator={false}
-          contentContainerStyle={styles.squadRow}
+          contentContainerStyle={styles.selectorRow}
         >
-          {squads.map(squad => {
-            const active = selectedSquadId === squad.squadId;
+          {precincts.map(pct => {
+            const active = selectedPrecinctNum === pct.precinctNum;
             return (
               <TouchableOpacity
-                key={squad.squadId}
-                onPress={() => setSelectedSquadId(squad.squadId)}
+                key={pct.precinctNum}
+                onPress={() => setSelectedPrecinctNum(pct.precinctNum)}
                 style={[
-                  styles.squadChip,
+                  styles.selectorChip,
                   active
                     ? { backgroundColor: colors.accent, borderColor: colors.accent }
                     : { backgroundColor: colors.cardBg, borderColor: colors.cardBorder },
@@ -136,13 +210,13 @@ export default function CalendarScreen() {
                 activeOpacity={0.7}
               >
                 <FontAwesome5
-                  name="users"
+                  name="building"
                   size={10}
                   color={active ? '#fff' : colors.textTertiary}
                   style={{ marginRight: 6 }}
                 />
-                <Text style={[styles.squadText, { color: active ? '#fff' : colors.textSecondary }]}>
-                  {squad.squadName}
+                <Text style={[styles.selectorText, { color: active ? '#fff' : colors.textSecondary }]} numberOfLines={1}>
+                  {pct.precinctNum}
                 </Text>
               </TouchableOpacity>
             );
@@ -165,26 +239,70 @@ export default function CalendarScreen() {
 
         {/* ── Stats ────────────────────────── */}
         <View style={styles.statsRow}>
-          <View style={[styles.statCard, { backgroundColor: `${DUTY_COLOR}12`, borderColor: `${DUTY_COLOR}30` }]}>
-            <View style={[styles.statDot, { backgroundColor: DUTY_COLOR }]} />
-            <Text style={[styles.statNum, { color: DUTY_COLOR }]}>{stats.duty}</Text>
-            <Text style={[styles.statLabel, { color: DUTY_COLOR }]}>Duty</Text>
+          <View style={[styles.statCard, { backgroundColor: hasHoursData ? `${OPEN_COLOR}12` : (isDark ? colors.surfaceVariant : '#F5F5F5'), borderColor: hasHoursData ? `${OPEN_COLOR}30` : colors.cardBorder }]}>
+            <View style={[styles.statDot, { backgroundColor: hasHoursData ? OPEN_COLOR : colors.textTertiary }]} />
+            <Text style={[styles.statNum, { color: hasHoursData ? OPEN_COLOR : colors.textTertiary }]}>{hasHoursData ? stats.open : '—'}</Text>
+            <Text style={[styles.statLabel, { color: hasHoursData ? OPEN_COLOR : colors.textTertiary }]}>Open</Text>
           </View>
-          <View style={[styles.statCard, { backgroundColor: `${RDO_COLOR}12`, borderColor: `${RDO_COLOR}30` }]}>
-            <View style={[styles.statDot, { backgroundColor: RDO_COLOR }]} />
-            <Text style={[styles.statNum, { color: RDO_COLOR }]}>{stats.rdo}</Text>
-            <Text style={[styles.statLabel, { color: RDO_COLOR }]}>RDO</Text>
+          <View style={[styles.statCard, { backgroundColor: hasHoursData ? `${CLOSED_COLOR}12` : (isDark ? colors.surfaceVariant : '#F5F5F5'), borderColor: hasHoursData ? `${CLOSED_COLOR}30` : colors.cardBorder }]}>
+            <View style={[styles.statDot, { backgroundColor: hasHoursData ? CLOSED_COLOR : colors.textTertiary }]} />
+            <Text style={[styles.statNum, { color: hasHoursData ? CLOSED_COLOR : colors.textTertiary }]}>{hasHoursData ? stats.closed : '—'}</Text>
+            <Text style={[styles.statLabel, { color: hasHoursData ? CLOSED_COLOR : colors.textTertiary }]}>Closed</Text>
           </View>
           <View style={[styles.statCard, { backgroundColor: isDark ? colors.surfaceVariant : '#F5F5F5', borderColor: colors.cardBorder }]}>
             <View style={[styles.statDot, { backgroundColor: colors.textTertiary }]} />
             <Text style={[styles.statNum, { color: colors.textPrimary }]}>{stats.total}</Text>
-            <Text style={[styles.statLabel, { color: colors.textTertiary }]}>Total</Text>
+            <Text style={[styles.statLabel, { color: colors.textTertiary }]}>Days</Text>
           </View>
         </View>
 
+        {/* ── Selected Day Detail ──────────── */}
+        {selectedDayInfo && (
+          <View style={[styles.dayDetailCard, { backgroundColor: colors.cardBg, borderColor: colors.cardBorder }]}>
+            <View style={styles.dayDetailLeft}>
+              <View style={[
+                styles.dayDetailBig,
+                { backgroundColor: selectedDayInfo.isOpen ? `${OPEN_COLOR}12` : `${CLOSED_COLOR}12` },
+              ]}>
+                <Text style={[styles.dayDetailNum, { color: selectedDayInfo.isOpen ? OPEN_COLOR : CLOSED_COLOR }]}>
+                  {selectedDay}
+                </Text>
+                <Text style={[styles.dayDetailDow, { color: selectedDayInfo.isOpen ? OPEN_COLOR : CLOSED_COLOR }]}>
+                  {selectedDayInfo.dayShort}
+                </Text>
+              </View>
+            </View>
+            <View style={styles.dayDetailRight}>
+              <Text style={[styles.dayDetailDate, { color: colors.textPrimary }]}>
+                {selectedDayInfo.dayName}
+              </Text>
+              <Text style={[styles.dayDetailDateSub, { color: colors.textTertiary }]}>
+                {selectedDayInfo.date}
+              </Text>
+              <View style={styles.dayDetailHoursRow}>
+                <View style={[
+                  styles.dayDetailStatusDot,
+                  { backgroundColor: selectedDayInfo.isOpen ? OPEN_COLOR : CLOSED_COLOR },
+                ]} />
+                <Text style={[
+                  styles.dayDetailStatus,
+                  { color: selectedDayInfo.isOpen ? OPEN_COLOR : CLOSED_COLOR },
+                ]}>
+                  {selectedDayInfo.isOpen ? 'Open' : 'Closed'}
+                </Text>
+              </View>
+              <View style={styles.dayDetailTimeRow}>
+                <FontAwesome5 name="clock" size={11} color={colors.textTertiary} style={{ marginRight: 6 }} />
+                <Text style={[styles.dayDetailTime, { color: colors.textSecondary }]}>
+                  {selectedDayInfo.hours}
+                </Text>
+              </View>
+            </View>
+          </View>
+        )}
+
         {/* ── Calendar Card ────────────────── */}
         <View style={[styles.calCard, { backgroundColor: colors.cardBg, borderColor: colors.cardBorder }]}>
-          {/* Weekday headers */}
           <View style={styles.weekRow}>
             {WEEKDAYS.map((d, i) => (
               <View key={i} style={styles.weekCell}>
@@ -200,61 +318,98 @@ export default function CalendarScreen() {
 
           <View style={[styles.weekDivider, { backgroundColor: colors.divider }]} />
 
-          {/* Day grid */}
           {calendarGrid.map((row, ri) => (
             <View key={ri} style={styles.dayRow}>
               {row.map((day, ci) => {
                 if (day === null) return <View key={ci} style={styles.dayCell} />;
 
-                const isRdo = monthSchedule[day] ?? false;
                 const isToday = isCurrentMonth && today.getDate() === day;
-                const isWeekend = ci === 0 || ci === 6;
+                const isSelected = selectedDay === day;
+                const pInfo = precinctMonthSchedule[day];
+                const isOpen = pInfo?.isOpen ?? true;
+                const cellColor = hasHoursData
+                  ? (isOpen ? OPEN_COLOR : CLOSED_COLOR)
+                  : colors.textTertiary;
 
                 return (
-                  <View key={ci} style={styles.dayCell}>
+                  <TouchableOpacity
+                    key={ci}
+                    style={styles.dayCell}
+                    activeOpacity={0.6}
+                    onPress={() => setSelectedDay(day)}
+                  >
                     <View style={[
                       styles.dayBubble,
-                      isRdo
-                        ? { backgroundColor: isDark ? `${RDO_COLOR}30` : `${RDO_COLOR}15` }
-                        : { backgroundColor: isDark ? `${DUTY_COLOR}30` : `${DUTY_COLOR}10` },
+                      hasHoursData
+                        ? { backgroundColor: isDark ? `${cellColor}30` : `${cellColor}12` }
+                        : { backgroundColor: isDark ? colors.surfaceVariant : '#F0F0F0' },
                       isToday && { borderWidth: 2.5, borderColor: TODAY_RING },
+                      isSelected && !isToday && { borderWidth: 2, borderColor: colors.accent },
                     ]}>
                       <Text style={[
                         styles.dayNum,
-                        { color: isRdo ? RDO_COLOR : DUTY_COLOR },
+                        { color: hasHoursData ? cellColor : colors.textPrimary },
                         isToday && { fontWeight: '900' },
                       ]}>
                         {day}
                       </Text>
                       <Text style={[
                         styles.dayLabel,
-                        { color: isRdo ? RDO_COLOR : DUTY_COLOR, opacity: 0.7 },
+                        { color: hasHoursData ? cellColor : colors.textTertiary, opacity: 0.8 },
                       ]}>
-                        {isRdo ? 'OFF' : 'ON'}
+                        {hasHoursData ? (isOpen ? 'OPEN' : 'OFF') : '—'}
                       </Text>
                     </View>
-                  </View>
+                  </TouchableOpacity>
                 );
               })}
             </View>
           ))}
         </View>
 
+        {/* ── Weekly Hours Card ────────────── */}
+        {hasHoursData && (
+          <View style={[styles.hoursListCard, { backgroundColor: colors.cardBg, borderColor: colors.cardBorder }]}>
+            <Text style={[styles.hoursListTitle, { color: colors.textTertiary }]}>WEEKLY HOURS</Text>
+            {precinctHours.map((dh, i) => {
+              const isToday2 = today.getDay() === i;
+              return (
+                <View key={i} style={[styles.hoursListRow, isToday2 && { backgroundColor: `${colors.accent}10`, borderRadius: 8 }]}>
+                  <View style={styles.hoursListDayCol}>
+                    <View style={[styles.hoursListDot, { backgroundColor: dh.isOpen ? OPEN_COLOR : CLOSED_COLOR }]} />
+                    <Text style={[styles.hoursListDay, { color: isToday2 ? colors.accent : colors.textPrimary }]}>
+                      {dh.day}
+                    </Text>
+                  </View>
+                  <Text style={[styles.hoursListTime, { color: dh.isOpen ? colors.textSecondary : CLOSED_COLOR }]}>
+                    {dh.hours}
+                  </Text>
+                  {isToday2 && (
+                    <View style={[styles.hoursListBadge, { backgroundColor: colors.accent }]}>
+                      <Text style={styles.hoursListBadgeText}>TODAY</Text>
+                    </View>
+                  )}
+                </View>
+              );
+            })}
+          </View>
+        )}
+
         {/* ── Legend ────────────────────────── */}
         <View style={[styles.legendCard, { backgroundColor: colors.cardBg, borderColor: colors.cardBorder }]}>
           <Text style={[styles.legendTitle, { color: colors.textTertiary }]}>LEGEND</Text>
           <View style={styles.legendRow}>
             <View style={styles.legendItem}>
-              <View style={[styles.legendBox, { backgroundColor: `${DUTY_COLOR}15` }]}>
-                <Text style={[styles.legendBoxText, { color: DUTY_COLOR }]}>ON</Text>
+              <View style={[styles.legendBox, { backgroundColor: `${OPEN_COLOR}15` }]}>
+                <Text style={[styles.legendBoxText, { color: OPEN_COLOR }]}>OPEN</Text>
               </View>
-              <Text style={[styles.legendText, { color: colors.textSecondary }]}>Duty Day</Text>
+              <Text style={[styles.legendText, { color: colors.textSecondary }]}>Open Day</Text>
             </View>
             <View style={styles.legendItem}>
-              <View style={[styles.legendBox, { backgroundColor: `${RDO_COLOR}15` }]}>
-                <Text style={[styles.legendBoxText, { color: RDO_COLOR }]}>OFF</Text>
+              <View style={[styles.legendBox, { backgroundColor: `${CLOSED_COLOR}15` }]}>
+                <Text style={[styles.legendBoxText, { color: CLOSED_COLOR }]}>OFF</Text>
               </View>
-              <Text style={[styles.legendText, { color: colors.textSecondary }]}>Regular Day Off</Text>
+              <Text style={[styles.legendText, { color: colors.textSecondary }]}>Closed Day</Text>
             </View>
             <View style={styles.legendItem}>
               <View style={[styles.legendBox, { borderWidth: 2.5, borderColor: TODAY_RING, backgroundColor: 'transparent' }]}>
@@ -291,14 +446,14 @@ const styles = StyleSheet.create({
   },
   todayBtnText: { fontSize: 12, fontWeight: '700', color: '#fff' },
 
-  // ── Squad selector ──
-  squadRow: { paddingHorizontal: 16, paddingVertical: 12, gap: 8 },
-  squadChip: {
+  // ── Precinct selector ──
+  selectorRow: { paddingHorizontal: 16, paddingVertical: 12, gap: 8 },
+  selectorChip: {
     flexDirection: 'row', alignItems: 'center',
     paddingHorizontal: 14, paddingVertical: 9,
     borderRadius: 12, borderWidth: 1,
   },
-  squadText: { fontSize: 13, fontWeight: '700' },
+  selectorText: { fontSize: 13, fontWeight: '700' },
 
   // ── Month nav ──
   monthCard: {
@@ -327,6 +482,33 @@ const styles = StyleSheet.create({
   statNum: { fontSize: 22, fontWeight: '900' },
   statLabel: { fontSize: 10, fontWeight: '700', marginTop: 1, textTransform: 'uppercase', letterSpacing: 0.5 },
 
+  // ── Selected day detail ──
+  dayDetailCard: {
+    flexDirection: 'row',
+    marginHorizontal: 16, marginTop: 12,
+    borderRadius: 16, borderWidth: 1,
+    padding: 14, gap: 14,
+  },
+  dayDetailLeft: { alignItems: 'center', justifyContent: 'center' },
+  dayDetailBig: {
+    width: 60, height: 60, borderRadius: 16,
+    alignItems: 'center', justifyContent: 'center',
+  },
+  dayDetailNum: { fontSize: 22, fontWeight: '900' },
+  dayDetailDow: { fontSize: 10, fontWeight: '700', marginTop: -2 },
+  dayDetailRight: { flex: 1, justifyContent: 'center' },
+  dayDetailDate: { fontSize: 16, fontWeight: '800' },
+  dayDetailDateSub: { fontSize: 11, fontWeight: '500', marginTop: 1 },
+  dayDetailHoursRow: {
+    flexDirection: 'row', alignItems: 'center', gap: 5, marginTop: 6,
+  },
+  dayDetailStatusDot: { width: 7, height: 7, borderRadius: 3.5 },
+  dayDetailStatus: { fontSize: 12, fontWeight: '700' },
+  dayDetailTimeRow: {
+    flexDirection: 'row', alignItems: 'center', marginTop: 3,
+  },
+  dayDetailTime: { fontSize: 12, fontWeight: '600' },
+
   // ── Calendar card ──
   calCard: {
     marginHorizontal: 16, marginTop: 12,
@@ -345,6 +527,34 @@ const styles = StyleSheet.create({
   },
   dayNum: { fontSize: 15, fontWeight: '700' },
   dayLabel: { fontSize: 7, fontWeight: '800', marginTop: -1, letterSpacing: 0.5 },
+
+  // ── Weekly hours list ──
+  hoursListCard: {
+    marginHorizontal: 16, marginTop: 12,
+    borderRadius: 16, borderWidth: 1,
+    padding: 14,
+  },
+  hoursListTitle: {
+    fontSize: 10, fontWeight: '700',
+    letterSpacing: 1, marginBottom: 10,
+  },
+  hoursListRow: {
+    flexDirection: 'row', alignItems: 'center',
+    paddingVertical: 8, paddingHorizontal: 8,
+  },
+  hoursListDayCol: {
+    flexDirection: 'row', alignItems: 'center',
+    gap: 8, width: 110,
+  },
+  hoursListDot: { width: 8, height: 8, borderRadius: 4 },
+  hoursListDay: { fontSize: 13, fontWeight: '600' },
+  hoursListTime: { fontSize: 12, fontWeight: '500', flex: 1 },
+  hoursListBadge: {
+    paddingHorizontal: 7, paddingVertical: 2, borderRadius: 6,
+  },
+  hoursListBadgeText: {
+    fontSize: 8, fontWeight: '800', color: '#fff', letterSpacing: 0.5,
+  },
 
   // ── Legend ──
   legendCard: {

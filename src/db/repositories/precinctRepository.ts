@@ -62,9 +62,9 @@ export async function findNearestPrecinct(point: LatLng): Promise<Precinct | nul
 export async function insertPrecinct(p: Precinct): Promise<void> {
   const db = await getDatabase();
   await db.runAsync(
-    `INSERT OR REPLACE INTO precincts (precinctNum, name, address, phone, borough, boundaryJson, centroidLat, centroidLng, boundingBoxJson)
-     VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)`,
-    [p.precinctNum, p.name, p.address, p.phone, p.borough, p.boundaryJson, p.centroidLat, p.centroidLng, p.boundingBoxJson]
+    `INSERT OR REPLACE INTO precincts (precinctNum, name, address, phone, borough, boundaryJson, centroidLat, centroidLng, boundingBoxJson, openingHoursJson)
+     VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+    [p.precinctNum, p.name, p.address, p.phone, p.borough, p.boundaryJson, p.centroidLat, p.centroidLng, p.boundingBoxJson, p.openingHoursJson]
   );
 }
 

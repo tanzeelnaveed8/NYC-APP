@@ -21,6 +21,18 @@ async function initDatabase(): Promise<SQLite.SQLiteDatabase> {
     }
   }
 
+  // Migrations: add columns that may not exist in older DB versions
+  const migrations = [
+    `ALTER TABLE precincts ADD COLUMN openingHoursJson TEXT NOT NULL DEFAULT '[]'`,
+  ];
+  for (const m of migrations) {
+    try {
+      await db.execAsync(m);
+    } catch {
+      // Column already exists — safe to ignore
+    }
+  }
+
   return db;
 }
 

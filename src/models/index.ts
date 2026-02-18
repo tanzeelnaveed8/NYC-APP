@@ -10,6 +10,7 @@ export interface Precinct {
   centroidLat: number;
   centroidLng: number;
   boundingBoxJson: string;
+  openingHoursJson: string;
 }
 
 export interface Sector {
