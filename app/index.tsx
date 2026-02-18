@@ -4,6 +4,7 @@ import { Text } from 'react-native-paper';
 import { FontAwesome5 } from '@expo/vector-icons';
 import { router } from 'expo-router';
 import { useAppContext } from '../src/context/AppContext';
+import { getDatabase } from '../src/db/database';
 import { performInitialDataLoad } from '../src/services/dataLoader';
 
 const NAVY  = '#0A1929';
@@ -13,13 +14,21 @@ export default function OnboardingScreen() {
   const { setIsDataLoaded } = useAppContext();
 
   useEffect(() => {
-    router.replace('/(tabs)/map');
+    (async () => {
+      try {
+        await getDatabase();
+      } catch {}
 
-    performInitialDataLoad().then(() => {
-      setIsDataLoaded(true);
-    }).catch((err) => {
-      console.warn('[DataLoader] Background load failed, will retry next launch:', err);
-    });
+      setTimeout(() => {
+        router.replace('/(tabs)/map');
+      }, 100);
+
+      performInitialDataLoad().then(() => {
+        setIsDataLoaded(true);
+      }).catch((err) => {
+        console.warn('[DataLoader] Background load failed:', err);
+      });
+    })();
   }, []);
 
   return (

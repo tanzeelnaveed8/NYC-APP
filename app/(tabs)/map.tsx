@@ -43,8 +43,10 @@ export default function MapScreen() {
 
   useEffect(() => {
     (async () => {
-      const pcts = await getAllPrecincts();
-      setDbPrecincts(pcts);
+      try {
+        const pcts = await getAllPrecincts();
+        setDbPrecincts(pcts);
+      } catch {}
     })();
   }, []);
 
@@ -97,46 +99,50 @@ export default function MapScreen() {
   }, [selectedPrecinct]);
 
   const handleMapPress = useCallback(async (e: MapPressEvent) => {
-    const { latitude, longitude } = e.nativeEvent.coordinate;
-    const point: LatLng = { latitude, longitude };
+    try {
+      const { latitude, longitude } = e.nativeEvent.coordinate;
+      const point: LatLng = { latitude, longitude };
 
-    let precinct = null;
-    const nearbyNum = await findNearbyNYPDPrecinct(latitude, longitude);
-    if (nearbyNum) {
-      precinct = await getPrecinctByNumber(nearbyNum);
-    }
-    if (!precinct) {
-      precinct = await findPrecinctAtLocation(point);
-    }
+      let precinct = null;
+      const nearbyNum = await findNearbyNYPDPrecinct(latitude, longitude);
+      if (nearbyNum) {
+        precinct = await getPrecinctByNumber(nearbyNum);
+      }
+      if (!precinct) {
+        precinct = await findPrecinctAtLocation(point);
+      }
 
-    setSelectedPrecinct(precinct);
-    setTappedLocation(precinct ? point : null);
-    setReverseAddress(null);
-    setSearchedAddress(null);
-    setSearchedLocation(null);
+      setSelectedPrecinct(precinct);
+      setTappedLocation(precinct ? point : null);
+      setReverseAddress(null);
+      setSearchedAddress(null);
+      setSearchedLocation(null);
+    } catch {}
   }, [setSelectedPrecinct, setSearchedAddress, setSearchedLocation]);
 
   const handleMapLongPress = useCallback(async (e: LongPressEvent) => {
-    const { latitude, longitude } = e.nativeEvent.coordinate;
-    const point: LatLng = { latitude, longitude };
-
-    let precinct = null;
-    const nearbyNum = await findNearbyNYPDPrecinct(latitude, longitude);
-    if (nearbyNum) {
-      precinct = await getPrecinctByNumber(nearbyNum);
-    }
-    if (!precinct) {
-      precinct = await findPrecinctAtLocation(point);
-    }
-
-    setSelectedPrecinct(precinct);
-    setTappedLocation(point);
     try {
-      const address = await reverseGeocode(latitude, longitude);
-      setReverseAddress(address || 'Address not found');
-    } catch {
-      setReverseAddress('Unable to resolve address');
-    }
+      const { latitude, longitude } = e.nativeEvent.coordinate;
+      const point: LatLng = { latitude, longitude };
+
+      let precinct = null;
+      const nearbyNum = await findNearbyNYPDPrecinct(latitude, longitude);
+      if (nearbyNum) {
+        precinct = await getPrecinctByNumber(nearbyNum);
+      }
+      if (!precinct) {
+        precinct = await findPrecinctAtLocation(point);
+      }
+
+      setSelectedPrecinct(precinct);
+      setTappedLocation(point);
+      try {
+        const address = await reverseGeocode(latitude, longitude);
+        setReverseAddress(address || 'Address not found');
+      } catch {
+        setReverseAddress('Unable to resolve address');
+      }
+    } catch {}
   }, [setSelectedPrecinct]);
 
   const handleToggleFavorite = useCallback(async () => {
@@ -185,14 +191,16 @@ export default function MapScreen() {
   const mapTypeValue = mapType === 'satellite' ? 'satellite' : mapType === 'terrain' ? 'terrain' : 'standard';
 
   const handleMarkerPress = useCallback(async (num: number) => {
-    const pct = await getPrecinctByNumber(num);
-    if (pct) {
-      setSelectedPrecinct(pct);
-      setTappedLocation(null);
-      setReverseAddress(null);
-      setSearchedAddress(null);
-      setSearchedLocation(null);
-    }
+    try {
+      const pct = await getPrecinctByNumber(num);
+      if (pct) {
+        setSelectedPrecinct(pct);
+        setTappedLocation(null);
+        setReverseAddress(null);
+        setSearchedAddress(null);
+        setSearchedLocation(null);
+      }
+    } catch {}
   }, [setSelectedPrecinct, setSearchedAddress, setSearchedLocation]);
 
   const precinctCoord = selectedPrecinct ? {
