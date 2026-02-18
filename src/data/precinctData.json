@@ -1,0 +1,3544 @@
+[
+  {
+    "precinctNum": 1,
+    "name": "New York Police Department - 1st Precinct",
+    "address": "16 Ericsson Pl, New York, NY 10013",
+    "phone": "(212) 334-0611",
+    "borough": "Manhattan",
+    "latitude": 40.72036809999999,
+    "longitude": -74.0069691,
+    "openingHours": [
+      {
+        "day": "Sunday",
+        "hours": "Open 24 hours",
+        "isOpen": true
+      },
+      {
+        "day": "Monday",
+        "hours": "Open 24 hours",
+        "isOpen": true
+      },
+      {
+        "day": "Tuesday",
+        "hours": "Open 24 hours",
+        "isOpen": true
+      },
+      {
+        "day": "Wednesday",
+        "hours": "Open 24 hours",
+        "isOpen": true
+      },
+      {
+        "day": "Thursday",
+        "hours": "Open 24 hours",
+        "isOpen": true
+      },
+      {
+        "day": "Friday",
+        "hours": "Open 24 hours",
+        "isOpen": true
+      },
+      {
+        "day": "Saturday",
+        "hours": "Open 24 hours",
+        "isOpen": true
+      }
+    ]
+  },
+  {
+    "precinctNum": 5,
+    "name": "New York City Police Department - 5th Precinct",
+    "address": "19 Elizabeth St, New York, NY 10013",
+    "phone": "(212) 334-0711",
+    "borough": "Manhattan",
+    "latitude": 40.7161448,
+    "longitude": -73.99735009999999,
+    "openingHours": [
+      {
+        "day": "Sunday",
+        "hours": "Open 24 hours",
+        "isOpen": true
+      },
+      {
+        "day": "Monday",
+        "hours": "Open 24 hours",
+        "isOpen": true
+      },
+      {
+        "day": "Tuesday",
+        "hours": "Open 24 hours",
+        "isOpen": true
+      },
+      {
+        "day": "Wednesday",
+        "hours": "Open 24 hours",
+        "isOpen": true
+      },
+      {
+        "day": "Thursday",
+        "hours": "Open 24 hours",
+        "isOpen": true
+      },
+      {
+        "day": "Friday",
+        "hours": "Open 24 hours",
+        "isOpen": true
+      },
+      {
+        "day": "Saturday",
+        "hours": "Open 24 hours",
+        "isOpen": true
+      }
+    ]
+  },
+  {
+    "precinctNum": 6,
+    "name": "New York City Police Department - 6th Precinct",
+    "address": "233 W 10th St, New York, NY 10014",
+    "phone": "(212) 741-4811",
+    "borough": "Manhattan",
+    "latitude": 40.7339622,
+    "longitude": -74.0054181,
+    "openingHours": [
+      {
+        "day": "Sunday",
+        "hours": "Open 24 hours",
+        "isOpen": true
+      },
+      {
+        "day": "Monday",
+        "hours": "Open 24 hours",
+        "isOpen": true
+      },
+      {
+        "day": "Tuesday",
+        "hours": "Open 24 hours",
+        "isOpen": true
+      },
+      {
+        "day": "Wednesday",
+        "hours": "Open 24 hours",
+        "isOpen": true
+      },
+      {
+        "day": "Thursday",
+        "hours": "Open 24 hours",
+        "isOpen": true
+      },
+      {
+        "day": "Friday",
+        "hours": "Open 24 hours",
+        "isOpen": true
+      },
+      {
+        "day": "Saturday",
+        "hours": "Open 24 hours",
+        "isOpen": true
+      }
+    ]
+  },
+  {
+    "precinctNum": 7,
+    "name": "New York City Police Department - 7th Precinct",
+    "address": "19 1/2 Pitt St, New York, NY 10002",
+    "phone": "(212) 477-7311",
+    "borough": "Manhattan",
+    "latitude": 40.716341,
+    "longitude": -73.983749,
+    "openingHours": [
+      {
+        "day": "Sunday",
+        "hours": "Open 24 hours",
+        "isOpen": true
+      },
+      {
+        "day": "Monday",
+        "hours": "Open 24 hours",
+        "isOpen": true
+      },
+      {
+        "day": "Tuesday",
+        "hours": "Open 24 hours",
+        "isOpen": true
+      },
+      {
+        "day": "Wednesday",
+        "hours": "Open 24 hours",
+        "isOpen": true
+      },
+      {
+        "day": "Thursday",
+        "hours": "Open 24 hours",
+        "isOpen": true
+      },
+      {
+        "day": "Friday",
+        "hours": "Open 24 hours",
+        "isOpen": true
+      },
+      {
+        "day": "Saturday",
+        "hours": "Open 24 hours",
+        "isOpen": true
+      }
+    ]
+  },
+  {
+    "precinctNum": 9,
+    "name": "New York City Police Department - 9th Precinct",
+    "address": "321 E 5th St, New York, NY 10003",
+    "phone": "(212) 477-7811",
+    "borough": "Manhattan",
+    "latitude": 40.7264582,
+    "longitude": -73.98784859999999,
+    "openingHours": [
+      {
+        "day": "Sunday",
+        "hours": "Closed",
+        "isOpen": false
+      },
+      {
+        "day": "Monday",
+        "hours": "Open 24 hours",
+        "isOpen": true
+      },
+      {
+        "day": "Tuesday",
+        "hours": "Open 24 hours",
+        "isOpen": true
+      },
+      {
+        "day": "Wednesday",
+        "hours": "Open 24 hours",
+        "isOpen": true
+      },
+      {
+        "day": "Thursday",
+        "hours": "Open 24 hours",
+        "isOpen": true
+      },
+      {
+        "day": "Friday",
+        "hours": "Open 24 hours",
+        "isOpen": true
+      },
+      {
+        "day": "Saturday",
+        "hours": "Closed",
+        "isOpen": false
+      }
+    ]
+  },
+  {
+    "precinctNum": 10,
+    "name": "New York City Police Department - 10th Precinct",
+    "address": "230 W 20th St, New York, NY 10011",
+    "phone": "(212) 741-8211",
+    "borough": "Manhattan",
+    "latitude": 40.7427095,
+    "longitude": -73.9986413,
+    "openingHours": [
+      {
+        "day": "Sunday",
+        "hours": "Open 24 hours",
+        "isOpen": true
+      },
+      {
+        "day": "Monday",
+        "hours": "Open 24 hours",
+        "isOpen": true
+      },
+      {
+        "day": "Tuesday",
+        "hours": "Open 24 hours",
+        "isOpen": true
+      },
+      {
+        "day": "Wednesday",
+        "hours": "Open 24 hours",
+        "isOpen": true
+      },
+      {
+        "day": "Thursday",
+        "hours": "Open 24 hours",
+        "isOpen": true
+      },
+      {
+        "day": "Friday",
+        "hours": "Open 24 hours",
+        "isOpen": true
+      },
+      {
+        "day": "Saturday",
+        "hours": "Open 24 hours",
+        "isOpen": true
+      }
+    ]
+  },
+  {
+    "precinctNum": 13,
+    "name": "New York City Police Department - 13th Precinct",
+    "address": "230 E 21st St, New York, NY 10010",
+    "phone": "(212) 477-7411",
+    "borough": "Manhattan",
+    "latitude": 40.7369153,
+    "longitude": -73.982833,
+    "openingHours": [
+      {
+        "day": "Sunday",
+        "hours": "Open 24 hours",
+        "isOpen": true
+      },
+      {
+        "day": "Monday",
+        "hours": "Open 24 hours",
+        "isOpen": true
+      },
+      {
+        "day": "Tuesday",
+        "hours": "Open 24 hours",
+        "isOpen": true
+      },
+      {
+        "day": "Wednesday",
+        "hours": "Open 24 hours",
+        "isOpen": true
+      },
+      {
+        "day": "Thursday",
+        "hours": "Open 24 hours",
+        "isOpen": true
+      },
+      {
+        "day": "Friday",
+        "hours": "Open 24 hours",
+        "isOpen": true
+      },
+      {
+        "day": "Saturday",
+        "hours": "Open 24 hours",
+        "isOpen": true
+      }
+    ]
+  },
+  {
+    "precinctNum": 14,
+    "name": "Midtown South Precinct",
+    "address": "357 W 35th St, New York, NY 10001",
+    "phone": "(212) 239-9811",
+    "borough": "Manhattan",
+    "latitude": 40.753829,
+    "longitude": -73.9950018,
+    "openingHours": [
+      {
+        "day": "Sunday",
+        "hours": "Open 24 hours",
+        "isOpen": true
+      },
+      {
+        "day": "Monday",
+        "hours": "Open 24 hours",
+        "isOpen": true
+      },
+      {
+        "day": "Tuesday",
+        "hours": "Open 24 hours",
+        "isOpen": true
+      },
+      {
+        "day": "Wednesday",
+        "hours": "Open 24 hours",
+        "isOpen": true
+      },
+      {
+        "day": "Thursday",
+        "hours": "Open 24 hours",
+        "isOpen": true
+      },
+      {
+        "day": "Friday",
+        "hours": "Open 24 hours",
+        "isOpen": true
+      },
+      {
+        "day": "Saturday",
+        "hours": "Open 24 hours",
+        "isOpen": true
+      }
+    ]
+  },
+  {
+    "precinctNum": 17,
+    "name": "New York City Police Department - 17th Precinct",
+    "address": "167 E 51st St, New York, NY 10022",
+    "phone": "(212) 826-3211",
+    "borough": "Manhattan",
+    "latitude": 40.7567621,
+    "longitude": -73.9707858,
+    "openingHours": [
+      {
+        "day": "Sunday",
+        "hours": "Open 24 hours",
+        "isOpen": true
+      },
+      {
+        "day": "Monday",
+        "hours": "Open 24 hours",
+        "isOpen": true
+      },
+      {
+        "day": "Tuesday",
+        "hours": "Open 24 hours",
+        "isOpen": true
+      },
+      {
+        "day": "Wednesday",
+        "hours": "Open 24 hours",
+        "isOpen": true
+      },
+      {
+        "day": "Thursday",
+        "hours": "Open 24 hours",
+        "isOpen": true
+      },
+      {
+        "day": "Friday",
+        "hours": "Open 24 hours",
+        "isOpen": true
+      },
+      {
+        "day": "Saturday",
+        "hours": "Open 24 hours",
+        "isOpen": true
+      }
+    ]
+  },
+  {
+    "precinctNum": 18,
+    "name": "Midtown North Precinct",
+    "address": "306 W 54th St, New York, NY 10019",
+    "phone": "(212) 767-8400",
+    "borough": "Manhattan",
+    "latitude": 40.7649572,
+    "longitude": -73.9850996,
+    "openingHours": [
+      {
+        "day": "Sunday",
+        "hours": "Open 24 hours",
+        "isOpen": true
+      },
+      {
+        "day": "Monday",
+        "hours": "Open 24 hours",
+        "isOpen": true
+      },
+      {
+        "day": "Tuesday",
+        "hours": "Open 24 hours",
+        "isOpen": true
+      },
+      {
+        "day": "Wednesday",
+        "hours": "Open 24 hours",
+        "isOpen": true
+      },
+      {
+        "day": "Thursday",
+        "hours": "Open 24 hours",
+        "isOpen": true
+      },
+      {
+        "day": "Friday",
+        "hours": "Open 24 hours",
+        "isOpen": true
+      },
+      {
+        "day": "Saturday",
+        "hours": "Open 24 hours",
+        "isOpen": true
+      }
+    ]
+  },
+  {
+    "precinctNum": 19,
+    "name": "NYPD 19th Precinct",
+    "address": "153 E 67th St, New York, NY 10065",
+    "phone": "(212) 452-0600",
+    "borough": "Manhattan",
+    "latitude": 40.7670549,
+    "longitude": -73.9638556,
+    "openingHours": [
+      {
+        "day": "Sunday",
+        "hours": "Open 24 hours",
+        "isOpen": true
+      },
+      {
+        "day": "Monday",
+        "hours": "Open 24 hours",
+        "isOpen": true
+      },
+      {
+        "day": "Tuesday",
+        "hours": "Open 24 hours",
+        "isOpen": true
+      },
+      {
+        "day": "Wednesday",
+        "hours": "Open 24 hours",
+        "isOpen": true
+      },
+      {
+        "day": "Thursday",
+        "hours": "Open 24 hours",
+        "isOpen": true
+      },
+      {
+        "day": "Friday",
+        "hours": "Open 24 hours",
+        "isOpen": true
+      },
+      {
+        "day": "Saturday",
+        "hours": "Open 24 hours",
+        "isOpen": true
+      }
+    ]
+  },
+  {
+    "precinctNum": 20,
+    "name": "New York City Police Department 20th Precinct",
+    "address": "120 W 82 St, New York, NY 10024",
+    "phone": "(212) 580-6411",
+    "borough": "Manhattan",
+    "latitude": 40.784192,
+    "longitude": -73.9751713,
+    "openingHours": [
+      {
+        "day": "Sunday",
+        "hours": "Open 24 hours",
+        "isOpen": true
+      },
+      {
+        "day": "Monday",
+        "hours": "Open 24 hours",
+        "isOpen": true
+      },
+      {
+        "day": "Tuesday",
+        "hours": "Open 24 hours",
+        "isOpen": true
+      },
+      {
+        "day": "Wednesday",
+        "hours": "Open 24 hours",
+        "isOpen": true
+      },
+      {
+        "day": "Thursday",
+        "hours": "Open 24 hours",
+        "isOpen": true
+      },
+      {
+        "day": "Friday",
+        "hours": "Open 24 hours",
+        "isOpen": true
+      },
+      {
+        "day": "Saturday",
+        "hours": "Open 24 hours",
+        "isOpen": true
+      }
+    ]
+  },
+  {
+    "precinctNum": 22,
+    "name": "22 Precinct Police Station in Central Park",
+    "address": "100 86th St Transverse, New York, NY 10128",
+    "phone": "",
+    "borough": "Manhattan",
+    "latitude": 40.7831959,
+    "longitude": -73.9643933,
+    "openingHours": [
+      {
+        "day": "Sunday",
+        "hours": "Open 24 hours",
+        "isOpen": true
+      },
+      {
+        "day": "Monday",
+        "hours": "Open 24 hours",
+        "isOpen": true
+      },
+      {
+        "day": "Tuesday",
+        "hours": "Open 24 hours",
+        "isOpen": true
+      },
+      {
+        "day": "Wednesday",
+        "hours": "Open 24 hours",
+        "isOpen": true
+      },
+      {
+        "day": "Thursday",
+        "hours": "Open 24 hours",
+        "isOpen": true
+      },
+      {
+        "day": "Friday",
+        "hours": "Open 24 hours",
+        "isOpen": true
+      },
+      {
+        "day": "Saturday",
+        "hours": "Open 24 hours",
+        "isOpen": true
+      }
+    ]
+  },
+  {
+    "precinctNum": 23,
+    "name": "New York City Police Department 23 Precinct",
+    "address": "164 E 102nd St, New York, NY 10029",
+    "phone": "(212) 860-6411",
+    "borough": "Manhattan",
+    "latitude": 40.7890987,
+    "longitude": -73.9470302,
+    "openingHours": [
+      {
+        "day": "Sunday",
+        "hours": "Open 24 hours",
+        "isOpen": true
+      },
+      {
+        "day": "Monday",
+        "hours": "Open 24 hours",
+        "isOpen": true
+      },
+      {
+        "day": "Tuesday",
+        "hours": "Open 24 hours",
+        "isOpen": true
+      },
+      {
+        "day": "Wednesday",
+        "hours": "Open 24 hours",
+        "isOpen": true
+      },
+      {
+        "day": "Thursday",
+        "hours": "Open 24 hours",
+        "isOpen": true
+      },
+      {
+        "day": "Friday",
+        "hours": "Open 24 hours",
+        "isOpen": true
+      },
+      {
+        "day": "Saturday",
+        "hours": "Open 24 hours",
+        "isOpen": true
+      }
+    ]
+  },
+  {
+    "precinctNum": 24,
+    "name": "New York Police Department - 24 Precinct",
+    "address": "151 W 100th St, New York, NY 10025",
+    "phone": "(212) 678-1811",
+    "borough": "Manhattan",
+    "latitude": 40.7965953,
+    "longitude": -73.96741209999999,
+    "openingHours": [
+      {
+        "day": "Sunday",
+        "hours": "Open 24 hours",
+        "isOpen": true
+      },
+      {
+        "day": "Monday",
+        "hours": "Open 24 hours",
+        "isOpen": true
+      },
+      {
+        "day": "Tuesday",
+        "hours": "Open 24 hours",
+        "isOpen": true
+      },
+      {
+        "day": "Wednesday",
+        "hours": "Open 24 hours",
+        "isOpen": true
+      },
+      {
+        "day": "Thursday",
+        "hours": "Open 24 hours",
+        "isOpen": true
+      },
+      {
+        "day": "Friday",
+        "hours": "Open 24 hours",
+        "isOpen": true
+      },
+      {
+        "day": "Saturday",
+        "hours": "Open 24 hours",
+        "isOpen": true
+      }
+    ]
+  },
+  {
+    "precinctNum": 25,
+    "name": "New York City Police Department - 25th Precinct",
+    "address": "120 E 119th St, New York, NY 10035",
+    "phone": "(212) 860-6511",
+    "borough": "Manhattan",
+    "latitude": 40.8008218,
+    "longitude": -73.9410566,
+    "openingHours": [
+      {
+        "day": "Sunday",
+        "hours": "Open 24 hours",
+        "isOpen": true
+      },
+      {
+        "day": "Monday",
+        "hours": "Open 24 hours",
+        "isOpen": true
+      },
+      {
+        "day": "Tuesday",
+        "hours": "Open 24 hours",
+        "isOpen": true
+      },
+      {
+        "day": "Wednesday",
+        "hours": "Open 24 hours",
+        "isOpen": true
+      },
+      {
+        "day": "Thursday",
+        "hours": "Open 24 hours",
+        "isOpen": true
+      },
+      {
+        "day": "Friday",
+        "hours": "Open 24 hours",
+        "isOpen": true
+      },
+      {
+        "day": "Saturday",
+        "hours": "Open 24 hours",
+        "isOpen": true
+      }
+    ]
+  },
+  {
+    "precinctNum": 26,
+    "name": "New York City Police Department - 26th Precinct",
+    "address": "520 W 126th St, New York, NY 10027",
+    "phone": "(212) 678-1311",
+    "borough": "Manhattan",
+    "latitude": 40.814747,
+    "longitude": -73.9564066,
+    "openingHours": [
+      {
+        "day": "Sunday",
+        "hours": "Open 24 hours",
+        "isOpen": true
+      },
+      {
+        "day": "Monday",
+        "hours": "Open 24 hours",
+        "isOpen": true
+      },
+      {
+        "day": "Tuesday",
+        "hours": "Open 24 hours",
+        "isOpen": true
+      },
+      {
+        "day": "Wednesday",
+        "hours": "Open 24 hours",
+        "isOpen": true
+      },
+      {
+        "day": "Thursday",
+        "hours": "Open 24 hours",
+        "isOpen": true
+      },
+      {
+        "day": "Friday",
+        "hours": "Open 24 hours",
+        "isOpen": true
+      },
+      {
+        "day": "Saturday",
+        "hours": "Open 24 hours",
+        "isOpen": true
+      }
+    ]
+  },
+  {
+    "precinctNum": 28,
+    "name": "NYPD 28th Precinct",
+    "address": "2271-89 Frederick Douglass Blvd, New York, NY 10027",
+    "phone": "(212) 678-1611",
+    "borough": "Manhattan",
+    "latitude": 40.8088055,
+    "longitude": -73.9525163,
+    "openingHours": [
+      {
+        "day": "Sunday",
+        "hours": "12:00 AM – 11:45 PM",
+        "isOpen": true
+      },
+      {
+        "day": "Monday",
+        "hours": "12:00 AM – 11:45 PM",
+        "isOpen": true
+      },
+      {
+        "day": "Tuesday",
+        "hours": "12:00 AM – 11:45 PM",
+        "isOpen": true
+      },
+      {
+        "day": "Wednesday",
+        "hours": "12:00 AM – 11:45 PM",
+        "isOpen": true
+      },
+      {
+        "day": "Thursday",
+        "hours": "12:00 AM – 11:45 PM",
+        "isOpen": true
+      },
+      {
+        "day": "Friday",
+        "hours": "12:00 AM – 11:45 PM",
+        "isOpen": true
+      },
+      {
+        "day": "Saturday",
+        "hours": "12:00 AM – 11:45 PM",
+        "isOpen": true
+      }
+    ]
+  },
+  {
+    "precinctNum": 30,
+    "name": "New York City Police Department - 30th Precinct",
+    "address": "451 W 151st St, New York, NY 10031",
+    "phone": "(212) 690-8811",
+    "borough": "Manhattan",
+    "latitude": 40.8288143,
+    "longitude": -73.943716,
+    "openingHours": [
+      {
+        "day": "Sunday",
+        "hours": "Open 24 hours",
+        "isOpen": true
+      },
+      {
+        "day": "Monday",
+        "hours": "Open 24 hours",
+        "isOpen": true
+      },
+      {
+        "day": "Tuesday",
+        "hours": "Open 24 hours",
+        "isOpen": true
+      },
+      {
+        "day": "Wednesday",
+        "hours": "Open 24 hours",
+        "isOpen": true
+      },
+      {
+        "day": "Thursday",
+        "hours": "Open 24 hours",
+        "isOpen": true
+      },
+      {
+        "day": "Friday",
+        "hours": "Open 24 hours",
+        "isOpen": true
+      },
+      {
+        "day": "Saturday",
+        "hours": "Open 24 hours",
+        "isOpen": true
+      }
+    ]
+  },
+  {
+    "precinctNum": 32,
+    "name": "New York City Police Department - 32nd Precinct",
+    "address": "250 W 135th St, New York, NY 10030",
+    "phone": "(212) 690-6311",
+    "borough": "Manhattan",
+    "latitude": 40.81573059999999,
+    "longitude": -73.9453588,
+    "openingHours": [
+      {
+        "day": "Sunday",
+        "hours": "Open 24 hours",
+        "isOpen": true
+      },
+      {
+        "day": "Monday",
+        "hours": "Open 24 hours",
+        "isOpen": true
+      },
+      {
+        "day": "Tuesday",
+        "hours": "Open 24 hours",
+        "isOpen": true
+      },
+      {
+        "day": "Wednesday",
+        "hours": "Open 24 hours",
+        "isOpen": true
+      },
+      {
+        "day": "Thursday",
+        "hours": "Open 24 hours",
+        "isOpen": true
+      },
+      {
+        "day": "Friday",
+        "hours": "Open 24 hours",
+        "isOpen": true
+      },
+      {
+        "day": "Saturday",
+        "hours": "Open 24 hours",
+        "isOpen": true
+      }
+    ]
+  },
+  {
+    "precinctNum": 33,
+    "name": "New York City Police Department - 33rd Precinct",
+    "address": "Parking, lot 2207 Amsterdam Ave, New York, NY 10032",
+    "phone": "(212) 927-3200",
+    "borough": "Manhattan",
+    "latitude": 40.84078,
+    "longitude": -73.9357074,
+    "openingHours": [
+      {
+        "day": "Sunday",
+        "hours": "Open 24 hours",
+        "isOpen": true
+      },
+      {
+        "day": "Monday",
+        "hours": "Open 24 hours",
+        "isOpen": true
+      },
+      {
+        "day": "Tuesday",
+        "hours": "Open 24 hours",
+        "isOpen": true
+      },
+      {
+        "day": "Wednesday",
+        "hours": "Open 24 hours",
+        "isOpen": true
+      },
+      {
+        "day": "Thursday",
+        "hours": "Open 24 hours",
+        "isOpen": true
+      },
+      {
+        "day": "Friday",
+        "hours": "Open 24 hours",
+        "isOpen": true
+      },
+      {
+        "day": "Saturday",
+        "hours": "Open 24 hours",
+        "isOpen": true
+      }
+    ]
+  },
+  {
+    "precinctNum": 34,
+    "name": "New York Police Department 34th Precinct",
+    "address": "4295 Broadway, New York, NY 10033",
+    "phone": "(212) 927-9711",
+    "borough": "Manhattan",
+    "latitude": 40.851539,
+    "longitude": -73.9354532,
+    "openingHours": [
+      {
+        "day": "Sunday",
+        "hours": "Open 24 hours",
+        "isOpen": true
+      },
+      {
+        "day": "Monday",
+        "hours": "Open 24 hours",
+        "isOpen": true
+      },
+      {
+        "day": "Tuesday",
+        "hours": "Open 24 hours",
+        "isOpen": true
+      },
+      {
+        "day": "Wednesday",
+        "hours": "Open 24 hours",
+        "isOpen": true
+      },
+      {
+        "day": "Thursday",
+        "hours": "Open 24 hours",
+        "isOpen": true
+      },
+      {
+        "day": "Friday",
+        "hours": "Open 24 hours",
+        "isOpen": true
+      },
+      {
+        "day": "Saturday",
+        "hours": "Open 24 hours",
+        "isOpen": true
+      }
+    ]
+  },
+  {
+    "precinctNum": 40,
+    "name": "New York City Police Department - 40th Precinct",
+    "address": "257 Alexander Ave, Bronx, NY 10454",
+    "phone": "",
+    "borough": "Bronx",
+    "latitude": 40.810308,
+    "longitude": -73.9251737,
+    "openingHours": [
+      {
+        "day": "Sunday",
+        "hours": "Open 24 hours",
+        "isOpen": true
+      },
+      {
+        "day": "Monday",
+        "hours": "Open 24 hours",
+        "isOpen": true
+      },
+      {
+        "day": "Tuesday",
+        "hours": "Open 24 hours",
+        "isOpen": true
+      },
+      {
+        "day": "Wednesday",
+        "hours": "Open 24 hours",
+        "isOpen": true
+      },
+      {
+        "day": "Thursday",
+        "hours": "Open 24 hours",
+        "isOpen": true
+      },
+      {
+        "day": "Friday",
+        "hours": "Open 24 hours",
+        "isOpen": true
+      },
+      {
+        "day": "Saturday",
+        "hours": "Open 24 hours",
+        "isOpen": true
+      }
+    ]
+  },
+  {
+    "precinctNum": 41,
+    "name": "New York City Police Department - 41st Precinct",
+    "address": "1035 Longwood Ave, Bronx, NY 10459",
+    "phone": "(718) 542-4771",
+    "borough": "Bronx",
+    "latitude": 40.8161906,
+    "longitude": -73.8956269,
+    "openingHours": [
+      {
+        "day": "Sunday",
+        "hours": "Open 24 hours",
+        "isOpen": true
+      },
+      {
+        "day": "Monday",
+        "hours": "Open 24 hours",
+        "isOpen": true
+      },
+      {
+        "day": "Tuesday",
+        "hours": "Open 24 hours",
+        "isOpen": true
+      },
+      {
+        "day": "Wednesday",
+        "hours": "Open 24 hours",
+        "isOpen": true
+      },
+      {
+        "day": "Thursday",
+        "hours": "Open 24 hours",
+        "isOpen": true
+      },
+      {
+        "day": "Friday",
+        "hours": "Open 24 hours",
+        "isOpen": true
+      },
+      {
+        "day": "Saturday",
+        "hours": "Open 24 hours",
+        "isOpen": true
+      }
+    ]
+  },
+  {
+    "precinctNum": 42,
+    "name": "New York City Police Department - 42nd Precinct",
+    "address": "830 Washington Ave, Bronx, NY 10451",
+    "phone": "(718) 402-3887",
+    "borough": "Bronx",
+    "latitude": 40.82241390000001,
+    "longitude": -73.9113346,
+    "openingHours": [
+      {
+        "day": "Sunday",
+        "hours": "Open 24 hours",
+        "isOpen": true
+      },
+      {
+        "day": "Monday",
+        "hours": "Open 24 hours",
+        "isOpen": true
+      },
+      {
+        "day": "Tuesday",
+        "hours": "Open 24 hours",
+        "isOpen": true
+      },
+      {
+        "day": "Wednesday",
+        "hours": "Open 24 hours",
+        "isOpen": true
+      },
+      {
+        "day": "Thursday",
+        "hours": "Open 24 hours",
+        "isOpen": true
+      },
+      {
+        "day": "Friday",
+        "hours": "Open 24 hours",
+        "isOpen": true
+      },
+      {
+        "day": "Saturday",
+        "hours": "Open 24 hours",
+        "isOpen": true
+      }
+    ]
+  },
+  {
+    "precinctNum": 43,
+    "name": "New York City Police Department - 43rd Precinct",
+    "address": "900 Fteley Ave, Bronx, NY 10473",
+    "phone": "(718) 542-0888",
+    "borough": "Bronx",
+    "latitude": 40.823,
+    "longitude": -73.869903,
+    "openingHours": [
+      {
+        "day": "Sunday",
+        "hours": "Open 24 hours",
+        "isOpen": true
+      },
+      {
+        "day": "Monday",
+        "hours": "Open 24 hours",
+        "isOpen": true
+      },
+      {
+        "day": "Tuesday",
+        "hours": "Open 24 hours",
+        "isOpen": true
+      },
+      {
+        "day": "Wednesday",
+        "hours": "Open 24 hours",
+        "isOpen": true
+      },
+      {
+        "day": "Thursday",
+        "hours": "Open 24 hours",
+        "isOpen": true
+      },
+      {
+        "day": "Friday",
+        "hours": "Open 24 hours",
+        "isOpen": true
+      },
+      {
+        "day": "Saturday",
+        "hours": "Open 24 hours",
+        "isOpen": true
+      }
+    ]
+  },
+  {
+    "precinctNum": 44,
+    "name": "New York City Police Department - 44th Precinct",
+    "address": "2 E 169th St, Bronx, NY 10452",
+    "phone": "(718) 590-5511",
+    "borough": "Bronx",
+    "latitude": 40.8374992,
+    "longitude": -73.9195688,
+    "openingHours": [
+      {
+        "day": "Sunday",
+        "hours": "Open 24 hours",
+        "isOpen": true
+      },
+      {
+        "day": "Monday",
+        "hours": "Open 24 hours",
+        "isOpen": true
+      },
+      {
+        "day": "Tuesday",
+        "hours": "Open 24 hours",
+        "isOpen": true
+      },
+      {
+        "day": "Wednesday",
+        "hours": "Open 24 hours",
+        "isOpen": true
+      },
+      {
+        "day": "Thursday",
+        "hours": "Open 24 hours",
+        "isOpen": true
+      },
+      {
+        "day": "Friday",
+        "hours": "Open 24 hours",
+        "isOpen": true
+      },
+      {
+        "day": "Saturday",
+        "hours": "Open 24 hours",
+        "isOpen": true
+      }
+    ]
+  },
+  {
+    "precinctNum": 45,
+    "name": "New York City Police Department - 45th Precinct",
+    "address": "2877 Barkley Ave, Bronx, NY 10465",
+    "phone": "(718) 822-5411",
+    "borough": "Bronx",
+    "latitude": 40.8307605,
+    "longitude": -73.8272489,
+    "openingHours": [
+      {
+        "day": "Sunday",
+        "hours": "Open 24 hours",
+        "isOpen": true
+      },
+      {
+        "day": "Monday",
+        "hours": "Open 24 hours",
+        "isOpen": true
+      },
+      {
+        "day": "Tuesday",
+        "hours": "Open 24 hours",
+        "isOpen": true
+      },
+      {
+        "day": "Wednesday",
+        "hours": "Open 24 hours",
+        "isOpen": true
+      },
+      {
+        "day": "Thursday",
+        "hours": "Open 24 hours",
+        "isOpen": true
+      },
+      {
+        "day": "Friday",
+        "hours": "Open 24 hours",
+        "isOpen": true
+      },
+      {
+        "day": "Saturday",
+        "hours": "Open 24 hours",
+        "isOpen": true
+      }
+    ]
+  },
+  {
+    "precinctNum": 46,
+    "name": "46th Precinct Police Bronx",
+    "address": "2120 Ryer Ave, Bronx, NY 10457",
+    "phone": "(718) 220-5211",
+    "borough": "Bronx",
+    "latitude": 40.8540571,
+    "longitude": -73.90023769999999,
+    "openingHours": [
+      {
+        "day": "Sunday",
+        "hours": "Open 24 hours",
+        "isOpen": true
+      },
+      {
+        "day": "Monday",
+        "hours": "Open 24 hours",
+        "isOpen": true
+      },
+      {
+        "day": "Tuesday",
+        "hours": "Open 24 hours",
+        "isOpen": true
+      },
+      {
+        "day": "Wednesday",
+        "hours": "Open 24 hours",
+        "isOpen": true
+      },
+      {
+        "day": "Thursday",
+        "hours": "Open 24 hours",
+        "isOpen": true
+      },
+      {
+        "day": "Friday",
+        "hours": "Open 24 hours",
+        "isOpen": true
+      },
+      {
+        "day": "Saturday",
+        "hours": "Open 24 hours",
+        "isOpen": true
+      }
+    ]
+  },
+  {
+    "precinctNum": 47,
+    "name": "New York City Police Department - 47th Precinct",
+    "address": "4111 Laconia Ave, Bronx, NY 10466",
+    "phone": "(718) 920-1211",
+    "borough": "Bronx",
+    "latitude": 40.8875027,
+    "longitude": -73.8475126,
+    "openingHours": [
+      {
+        "day": "Sunday",
+        "hours": "Open 24 hours",
+        "isOpen": true
+      },
+      {
+        "day": "Monday",
+        "hours": "Open 24 hours",
+        "isOpen": true
+      },
+      {
+        "day": "Tuesday",
+        "hours": "Open 24 hours",
+        "isOpen": true
+      },
+      {
+        "day": "Wednesday",
+        "hours": "Open 24 hours",
+        "isOpen": true
+      },
+      {
+        "day": "Thursday",
+        "hours": "Open 24 hours",
+        "isOpen": true
+      },
+      {
+        "day": "Friday",
+        "hours": "Open 24 hours",
+        "isOpen": true
+      },
+      {
+        "day": "Saturday",
+        "hours": "Open 24 hours",
+        "isOpen": true
+      }
+    ]
+  },
+  {
+    "precinctNum": 48,
+    "name": "New York City Police Department - 48th Precinct",
+    "address": "450 Cross Bronx Expy, Bronx, NY 10457",
+    "phone": "(718) 299-3900",
+    "borough": "Bronx",
+    "latitude": 40.8440271,
+    "longitude": -73.9003901,
+    "openingHours": [
+      {
+        "day": "Sunday",
+        "hours": "Open 24 hours",
+        "isOpen": true
+      },
+      {
+        "day": "Monday",
+        "hours": "Open 24 hours",
+        "isOpen": true
+      },
+      {
+        "day": "Tuesday",
+        "hours": "Open 24 hours",
+        "isOpen": true
+      },
+      {
+        "day": "Wednesday",
+        "hours": "Open 24 hours",
+        "isOpen": true
+      },
+      {
+        "day": "Thursday",
+        "hours": "Open 24 hours",
+        "isOpen": true
+      },
+      {
+        "day": "Friday",
+        "hours": "Open 24 hours",
+        "isOpen": true
+      },
+      {
+        "day": "Saturday",
+        "hours": "Open 24 hours",
+        "isOpen": true
+      }
+    ]
+  },
+  {
+    "precinctNum": 49,
+    "name": "Bronx 49 Precinct Police Department",
+    "address": "2121 Eastchester Rd, Bronx, NY 10461",
+    "phone": "(718) 918-2000",
+    "borough": "Bronx",
+    "latitude": 40.8562586,
+    "longitude": -73.8444987,
+    "openingHours": [
+      {
+        "day": "Sunday",
+        "hours": "Open 24 hours",
+        "isOpen": true
+      },
+      {
+        "day": "Monday",
+        "hours": "Open 24 hours",
+        "isOpen": true
+      },
+      {
+        "day": "Tuesday",
+        "hours": "Open 24 hours",
+        "isOpen": true
+      },
+      {
+        "day": "Wednesday",
+        "hours": "Open 24 hours",
+        "isOpen": true
+      },
+      {
+        "day": "Thursday",
+        "hours": "Open 24 hours",
+        "isOpen": true
+      },
+      {
+        "day": "Friday",
+        "hours": "Open 24 hours",
+        "isOpen": true
+      },
+      {
+        "day": "Saturday",
+        "hours": "Open 24 hours",
+        "isOpen": true
+      }
+    ]
+  },
+  {
+    "precinctNum": 50,
+    "name": "New York Police Department 50th Precinct Station House",
+    "address": "3450 Kingsbridge Ave, Bronx, NY 10463",
+    "phone": "(718) 543-5700",
+    "borough": "Bronx",
+    "latitude": 40.8835686,
+    "longitude": -73.90231659999999,
+    "openingHours": [
+      {
+        "day": "Sunday",
+        "hours": "Open 24 hours",
+        "isOpen": true
+      },
+      {
+        "day": "Monday",
+        "hours": "Open 24 hours",
+        "isOpen": true
+      },
+      {
+        "day": "Tuesday",
+        "hours": "Open 24 hours",
+        "isOpen": true
+      },
+      {
+        "day": "Wednesday",
+        "hours": "Open 24 hours",
+        "isOpen": true
+      },
+      {
+        "day": "Thursday",
+        "hours": "Open 24 hours",
+        "isOpen": true
+      },
+      {
+        "day": "Friday",
+        "hours": "Open 24 hours",
+        "isOpen": true
+      },
+      {
+        "day": "Saturday",
+        "hours": "Open 24 hours",
+        "isOpen": true
+      }
+    ]
+  },
+  {
+    "precinctNum": 52,
+    "name": "NYPD 52nd Precinct",
+    "address": "3016 Webster Ave, Bronx, NY 10467",
+    "phone": "(718) 220-5811",
+    "borough": "Bronx",
+    "latitude": 40.8690962,
+    "longitude": -73.8796672,
+    "openingHours": [
+      {
+        "day": "Sunday",
+        "hours": "Closed",
+        "isOpen": false
+      },
+      {
+        "day": "Monday",
+        "hours": "7:00 AM – 3:00 PM",
+        "isOpen": true
+      },
+      {
+        "day": "Tuesday",
+        "hours": "7:00 AM – 3:00 PM",
+        "isOpen": true
+      },
+      {
+        "day": "Wednesday",
+        "hours": "7:00 AM – 3:00 PM",
+        "isOpen": true
+      },
+      {
+        "day": "Thursday",
+        "hours": "7:00 AM – 3:00 PM",
+        "isOpen": true
+      },
+      {
+        "day": "Friday",
+        "hours": "7:00 AM – 3:00 PM",
+        "isOpen": true
+      },
+      {
+        "day": "Saturday",
+        "hours": "Closed",
+        "isOpen": false
+      }
+    ]
+  },
+  {
+    "precinctNum": 60,
+    "name": "New York City Police Department - 60th Precinct",
+    "address": "2951 W 8th St, Brooklyn, NY 11224",
+    "phone": "(718) 946-3311",
+    "borough": "Brooklyn",
+    "latitude": 40.5765565,
+    "longitude": -73.9762914,
+    "openingHours": [
+      {
+        "day": "Sunday",
+        "hours": "Open 24 hours",
+        "isOpen": true
+      },
+      {
+        "day": "Monday",
+        "hours": "Open 24 hours",
+        "isOpen": true
+      },
+      {
+        "day": "Tuesday",
+        "hours": "Open 24 hours",
+        "isOpen": true
+      },
+      {
+        "day": "Wednesday",
+        "hours": "Open 24 hours",
+        "isOpen": true
+      },
+      {
+        "day": "Thursday",
+        "hours": "Open 24 hours",
+        "isOpen": true
+      },
+      {
+        "day": "Friday",
+        "hours": "Open 24 hours",
+        "isOpen": true
+      },
+      {
+        "day": "Saturday",
+        "hours": "Open 24 hours",
+        "isOpen": true
+      }
+    ]
+  },
+  {
+    "precinctNum": 61,
+    "name": "New York City Police Department - 61st Precinct",
+    "address": "2575 Coney Island Ave, Brooklyn, NY 11223",
+    "phone": "(718) 627-6611",
+    "borough": "Brooklyn",
+    "latitude": 40.5941163,
+    "longitude": -73.9606036,
+    "openingHours": [
+      {
+        "day": "Sunday",
+        "hours": "Open 24 hours",
+        "isOpen": true
+      },
+      {
+        "day": "Monday",
+        "hours": "Open 24 hours",
+        "isOpen": true
+      },
+      {
+        "day": "Tuesday",
+        "hours": "Open 24 hours",
+        "isOpen": true
+      },
+      {
+        "day": "Wednesday",
+        "hours": "Open 24 hours",
+        "isOpen": true
+      },
+      {
+        "day": "Thursday",
+        "hours": "Open 24 hours",
+        "isOpen": true
+      },
+      {
+        "day": "Friday",
+        "hours": "Open 24 hours",
+        "isOpen": true
+      },
+      {
+        "day": "Saturday",
+        "hours": "Open 24 hours",
+        "isOpen": true
+      }
+    ]
+  },
+  {
+    "precinctNum": 62,
+    "name": "New York City Police Department - 62nd Precinct",
+    "address": "1925 Bath Ave, Brooklyn, NY 11214",
+    "phone": "(718) 236-2611",
+    "borough": "Brooklyn",
+    "latitude": 40.6024545,
+    "longitude": -74.00313349999999,
+    "openingHours": [
+      {
+        "day": "Sunday",
+        "hours": "Open 24 hours",
+        "isOpen": true
+      },
+      {
+        "day": "Monday",
+        "hours": "Open 24 hours",
+        "isOpen": true
+      },
+      {
+        "day": "Tuesday",
+        "hours": "Open 24 hours",
+        "isOpen": true
+      },
+      {
+        "day": "Wednesday",
+        "hours": "Open 24 hours",
+        "isOpen": true
+      },
+      {
+        "day": "Thursday",
+        "hours": "Open 24 hours",
+        "isOpen": true
+      },
+      {
+        "day": "Friday",
+        "hours": "Open 24 hours",
+        "isOpen": true
+      },
+      {
+        "day": "Saturday",
+        "hours": "Open 24 hours",
+        "isOpen": true
+      }
+    ]
+  },
+  {
+    "precinctNum": 63,
+    "name": "New York City Police Department - 63rd Precinct",
+    "address": "1844 Brooklyn Ave, Brooklyn, NY 11210",
+    "phone": "(718) 258-4411",
+    "borough": "Brooklyn",
+    "latitude": 40.6279593,
+    "longitude": -73.9415234,
+    "openingHours": [
+      {
+        "day": "Sunday",
+        "hours": "Open 24 hours",
+        "isOpen": true
+      },
+      {
+        "day": "Monday",
+        "hours": "Open 24 hours",
+        "isOpen": true
+      },
+      {
+        "day": "Tuesday",
+        "hours": "Open 24 hours",
+        "isOpen": true
+      },
+      {
+        "day": "Wednesday",
+        "hours": "Open 24 hours",
+        "isOpen": true
+      },
+      {
+        "day": "Thursday",
+        "hours": "Open 24 hours",
+        "isOpen": true
+      },
+      {
+        "day": "Friday",
+        "hours": "Open 24 hours",
+        "isOpen": true
+      },
+      {
+        "day": "Saturday",
+        "hours": "Open 24 hours",
+        "isOpen": true
+      }
+    ]
+  },
+  {
+    "precinctNum": 66,
+    "name": "New York City Police Department - 66th Precinct",
+    "address": "5822 16th Ave, Brooklyn, NY 11204",
+    "phone": "(718) 851-5611",
+    "borough": "Brooklyn",
+    "latitude": 40.6256621,
+    "longitude": -73.9913226,
+    "openingHours": [
+      {
+        "day": "Sunday",
+        "hours": "Open 24 hours",
+        "isOpen": true
+      },
+      {
+        "day": "Monday",
+        "hours": "Open 24 hours",
+        "isOpen": true
+      },
+      {
+        "day": "Tuesday",
+        "hours": "Open 24 hours",
+        "isOpen": true
+      },
+      {
+        "day": "Wednesday",
+        "hours": "Open 24 hours",
+        "isOpen": true
+      },
+      {
+        "day": "Thursday",
+        "hours": "Open 24 hours",
+        "isOpen": true
+      },
+      {
+        "day": "Friday",
+        "hours": "Open 24 hours",
+        "isOpen": true
+      },
+      {
+        "day": "Saturday",
+        "hours": "Open 24 hours",
+        "isOpen": true
+      }
+    ]
+  },
+  {
+    "precinctNum": 67,
+    "name": "New York City Police Department - 67th Precinct",
+    "address": "2820 Snyder Ave, Brooklyn, NY 11226",
+    "phone": "(718) 287-3211",
+    "borough": "Brooklyn",
+    "latitude": 40.6487865,
+    "longitude": -73.9501183,
+    "openingHours": [
+      {
+        "day": "Sunday",
+        "hours": "Open 24 hours",
+        "isOpen": true
+      },
+      {
+        "day": "Monday",
+        "hours": "Open 24 hours",
+        "isOpen": true
+      },
+      {
+        "day": "Tuesday",
+        "hours": "Open 24 hours",
+        "isOpen": true
+      },
+      {
+        "day": "Wednesday",
+        "hours": "Open 24 hours",
+        "isOpen": true
+      },
+      {
+        "day": "Thursday",
+        "hours": "Open 24 hours",
+        "isOpen": true
+      },
+      {
+        "day": "Friday",
+        "hours": "Open 24 hours",
+        "isOpen": true
+      },
+      {
+        "day": "Saturday",
+        "hours": "Open 24 hours",
+        "isOpen": true
+      }
+    ]
+  },
+  {
+    "precinctNum": 68,
+    "name": "New York City Police Department - 68th Precinct",
+    "address": "333 65th St, Brooklyn, NY 11220",
+    "phone": "(718) 439-4211",
+    "borough": "Brooklyn",
+    "latitude": 40.6389536,
+    "longitude": -74.0226562,
+    "openingHours": [
+      {
+        "day": "Sunday",
+        "hours": "Open 24 hours",
+        "isOpen": true
+      },
+      {
+        "day": "Monday",
+        "hours": "Open 24 hours",
+        "isOpen": true
+      },
+      {
+        "day": "Tuesday",
+        "hours": "Open 24 hours",
+        "isOpen": true
+      },
+      {
+        "day": "Wednesday",
+        "hours": "Open 24 hours",
+        "isOpen": true
+      },
+      {
+        "day": "Thursday",
+        "hours": "Open 24 hours",
+        "isOpen": true
+      },
+      {
+        "day": "Friday",
+        "hours": "Open 24 hours",
+        "isOpen": true
+      },
+      {
+        "day": "Saturday",
+        "hours": "Open 24 hours",
+        "isOpen": true
+      }
+    ]
+  },
+  {
+    "precinctNum": 69,
+    "name": "New York City Police Department - 69th Precinct",
+    "address": "9720 Foster Ave, Brooklyn, NY 11236",
+    "phone": "(718) 257-6211",
+    "borough": "Brooklyn",
+    "latitude": 40.6485782,
+    "longitude": -73.90506309999999,
+    "openingHours": [
+      {
+        "day": "Sunday",
+        "hours": "Open 24 hours",
+        "isOpen": true
+      },
+      {
+        "day": "Monday",
+        "hours": "Open 24 hours",
+        "isOpen": true
+      },
+      {
+        "day": "Tuesday",
+        "hours": "Open 24 hours",
+        "isOpen": true
+      },
+      {
+        "day": "Wednesday",
+        "hours": "Open 24 hours",
+        "isOpen": true
+      },
+      {
+        "day": "Thursday",
+        "hours": "Open 24 hours",
+        "isOpen": true
+      },
+      {
+        "day": "Friday",
+        "hours": "Open 24 hours",
+        "isOpen": true
+      },
+      {
+        "day": "Saturday",
+        "hours": "Open 24 hours",
+        "isOpen": true
+      }
+    ]
+  },
+  {
+    "precinctNum": 70,
+    "name": "New York City Police Department - 70th Precinct",
+    "address": "154 Lawrence Ave, Brooklyn, NY 11230",
+    "phone": "(718) 851-5511",
+    "borough": "Brooklyn",
+    "latitude": 40.63048,
+    "longitude": -73.9737417,
+    "openingHours": [
+      {
+        "day": "Sunday",
+        "hours": "Open 24 hours",
+        "isOpen": true
+      },
+      {
+        "day": "Monday",
+        "hours": "Open 24 hours",
+        "isOpen": true
+      },
+      {
+        "day": "Tuesday",
+        "hours": "Open 24 hours",
+        "isOpen": true
+      },
+      {
+        "day": "Wednesday",
+        "hours": "Open 24 hours",
+        "isOpen": true
+      },
+      {
+        "day": "Thursday",
+        "hours": "Open 24 hours",
+        "isOpen": true
+      },
+      {
+        "day": "Friday",
+        "hours": "Open 24 hours",
+        "isOpen": true
+      },
+      {
+        "day": "Saturday",
+        "hours": "Open 24 hours",
+        "isOpen": true
+      }
+    ]
+  },
+  {
+    "precinctNum": 71,
+    "name": "New York City Police Department - 71st Precinct",
+    "address": "421 Empire Blvd, Brooklyn, NY 11225",
+    "phone": "(718) 735-0511",
+    "borough": "Brooklyn",
+    "latitude": 40.6645922,
+    "longitude": -73.9478302,
+    "openingHours": [
+      {
+        "day": "Sunday",
+        "hours": "Open 24 hours",
+        "isOpen": true
+      },
+      {
+        "day": "Monday",
+        "hours": "Open 24 hours",
+        "isOpen": true
+      },
+      {
+        "day": "Tuesday",
+        "hours": "Open 24 hours",
+        "isOpen": true
+      },
+      {
+        "day": "Wednesday",
+        "hours": "Open 24 hours",
+        "isOpen": true
+      },
+      {
+        "day": "Thursday",
+        "hours": "Open 24 hours",
+        "isOpen": true
+      },
+      {
+        "day": "Friday",
+        "hours": "Open 24 hours",
+        "isOpen": true
+      },
+      {
+        "day": "Saturday",
+        "hours": "Open 24 hours",
+        "isOpen": true
+      }
+    ]
+  },
+  {
+    "precinctNum": 72,
+    "name": "New York City Police Department - 72nd Precinct",
+    "address": "830 4th Ave, Brooklyn, NY 11232",
+    "phone": "(718) 965-6311",
+    "borough": "Brooklyn",
+    "latitude": 40.6583092,
+    "longitude": -74.00087909999999,
+    "openingHours": [
+      {
+        "day": "Sunday",
+        "hours": "Open 24 hours",
+        "isOpen": true
+      },
+      {
+        "day": "Monday",
+        "hours": "Open 24 hours",
+        "isOpen": true
+      },
+      {
+        "day": "Tuesday",
+        "hours": "Open 24 hours",
+        "isOpen": true
+      },
+      {
+        "day": "Wednesday",
+        "hours": "Open 24 hours",
+        "isOpen": true
+      },
+      {
+        "day": "Thursday",
+        "hours": "Open 24 hours",
+        "isOpen": true
+      },
+      {
+        "day": "Friday",
+        "hours": "Open 24 hours",
+        "isOpen": true
+      },
+      {
+        "day": "Saturday",
+        "hours": "Open 24 hours",
+        "isOpen": true
+      }
+    ]
+  },
+  {
+    "precinctNum": 73,
+    "name": "New York City Police Department - 73rd Precinct",
+    "address": "1470 E New York Ave, Brooklyn, NY 11212",
+    "phone": "(718) 495-5411",
+    "borough": "Brooklyn",
+    "latitude": 40.6709426,
+    "longitude": -73.9135546,
+    "openingHours": [
+      {
+        "day": "Sunday",
+        "hours": "Open 24 hours",
+        "isOpen": true
+      },
+      {
+        "day": "Monday",
+        "hours": "Open 24 hours",
+        "isOpen": true
+      },
+      {
+        "day": "Tuesday",
+        "hours": "Open 24 hours",
+        "isOpen": true
+      },
+      {
+        "day": "Wednesday",
+        "hours": "Open 24 hours",
+        "isOpen": true
+      },
+      {
+        "day": "Thursday",
+        "hours": "Open 24 hours",
+        "isOpen": true
+      },
+      {
+        "day": "Friday",
+        "hours": "Open 24 hours",
+        "isOpen": true
+      },
+      {
+        "day": "Saturday",
+        "hours": "Open 24 hours",
+        "isOpen": true
+      }
+    ]
+  },
+  {
+    "precinctNum": 75,
+    "name": "New York City Police Department - 75th Precinct",
+    "address": "1000 Sutter Ave, Brooklyn, NY 11208",
+    "phone": "(718) 827-3511",
+    "borough": "Brooklyn",
+    "latitude": 40.6713014,
+    "longitude": -73.88154329999999,
+    "openingHours": [
+      {
+        "day": "Sunday",
+        "hours": "Open 24 hours",
+        "isOpen": true
+      },
+      {
+        "day": "Monday",
+        "hours": "Open 24 hours",
+        "isOpen": true
+      },
+      {
+        "day": "Tuesday",
+        "hours": "Open 24 hours",
+        "isOpen": true
+      },
+      {
+        "day": "Wednesday",
+        "hours": "Open 24 hours",
+        "isOpen": true
+      },
+      {
+        "day": "Thursday",
+        "hours": "Open 24 hours",
+        "isOpen": true
+      },
+      {
+        "day": "Friday",
+        "hours": "Open 24 hours",
+        "isOpen": true
+      },
+      {
+        "day": "Saturday",
+        "hours": "Open 24 hours",
+        "isOpen": true
+      }
+    ]
+  },
+  {
+    "precinctNum": 76,
+    "name": "New York City Police Department 76th Precinct",
+    "address": "191 Union St, Brooklyn, NY 11231",
+    "phone": "(718) 834-3211",
+    "borough": "Brooklyn",
+    "latitude": 40.6837446,
+    "longitude": -74.0002805,
+    "openingHours": [
+      {
+        "day": "Sunday",
+        "hours": "Open 24 hours",
+        "isOpen": true
+      },
+      {
+        "day": "Monday",
+        "hours": "Open 24 hours",
+        "isOpen": true
+      },
+      {
+        "day": "Tuesday",
+        "hours": "Open 24 hours",
+        "isOpen": true
+      },
+      {
+        "day": "Wednesday",
+        "hours": "Open 24 hours",
+        "isOpen": true
+      },
+      {
+        "day": "Thursday",
+        "hours": "Open 24 hours",
+        "isOpen": true
+      },
+      {
+        "day": "Friday",
+        "hours": "Open 24 hours",
+        "isOpen": true
+      },
+      {
+        "day": "Saturday",
+        "hours": "Open 24 hours",
+        "isOpen": true
+      }
+    ]
+  },
+  {
+    "precinctNum": 77,
+    "name": "New York City Police Department - 77th Precinct",
+    "address": "127 Utica Ave, Brooklyn, NY 11213",
+    "phone": "(718) 735-0611",
+    "borough": "Brooklyn",
+    "latitude": 40.67479,
+    "longitude": -73.9303947,
+    "openingHours": [
+      {
+        "day": "Sunday",
+        "hours": "Open 24 hours",
+        "isOpen": true
+      },
+      {
+        "day": "Monday",
+        "hours": "Open 24 hours",
+        "isOpen": true
+      },
+      {
+        "day": "Tuesday",
+        "hours": "Open 24 hours",
+        "isOpen": true
+      },
+      {
+        "day": "Wednesday",
+        "hours": "Open 24 hours",
+        "isOpen": true
+      },
+      {
+        "day": "Thursday",
+        "hours": "Open 24 hours",
+        "isOpen": true
+      },
+      {
+        "day": "Friday",
+        "hours": "Open 24 hours",
+        "isOpen": true
+      },
+      {
+        "day": "Saturday",
+        "hours": "Open 24 hours",
+        "isOpen": true
+      }
+    ]
+  },
+  {
+    "precinctNum": 78,
+    "name": "New York City Police Department - 78th Precinct",
+    "address": "65 6th Ave, Brooklyn, NY 11217",
+    "phone": "(718) 636-6411",
+    "borough": "Brooklyn",
+    "latitude": 40.6809349,
+    "longitude": -73.9743096,
+    "openingHours": [
+      {
+        "day": "Sunday",
+        "hours": "Open 24 hours",
+        "isOpen": true
+      },
+      {
+        "day": "Monday",
+        "hours": "Open 24 hours",
+        "isOpen": true
+      },
+      {
+        "day": "Tuesday",
+        "hours": "Open 24 hours",
+        "isOpen": true
+      },
+      {
+        "day": "Wednesday",
+        "hours": "Open 24 hours",
+        "isOpen": true
+      },
+      {
+        "day": "Thursday",
+        "hours": "Open 24 hours",
+        "isOpen": true
+      },
+      {
+        "day": "Friday",
+        "hours": "Open 24 hours",
+        "isOpen": true
+      },
+      {
+        "day": "Saturday",
+        "hours": "Open 24 hours",
+        "isOpen": true
+      }
+    ]
+  },
+  {
+    "precinctNum": 79,
+    "name": "New York City Police Department - 79th Precinct",
+    "address": "263 Tompkins Ave, Brooklyn, NY 11216",
+    "phone": "(718) 636-6611",
+    "borough": "Brooklyn",
+    "latitude": 40.688829,
+    "longitude": -73.9448672,
+    "openingHours": [
+      {
+        "day": "Sunday",
+        "hours": "Open 24 hours",
+        "isOpen": true
+      },
+      {
+        "day": "Monday",
+        "hours": "Open 24 hours",
+        "isOpen": true
+      },
+      {
+        "day": "Tuesday",
+        "hours": "Open 24 hours",
+        "isOpen": true
+      },
+      {
+        "day": "Wednesday",
+        "hours": "Open 24 hours",
+        "isOpen": true
+      },
+      {
+        "day": "Thursday",
+        "hours": "Open 24 hours",
+        "isOpen": true
+      },
+      {
+        "day": "Friday",
+        "hours": "Open 24 hours",
+        "isOpen": true
+      },
+      {
+        "day": "Saturday",
+        "hours": "Open 24 hours",
+        "isOpen": true
+      }
+    ]
+  },
+  {
+    "precinctNum": 81,
+    "name": "New York City Police Department - 81st Precinct",
+    "address": "30 Ralph Ave, Brooklyn, NY 11221",
+    "phone": "(718) 574-0411",
+    "borough": "Brooklyn",
+    "latitude": 40.6896707,
+    "longitude": -73.9242001,
+    "openingHours": [
+      {
+        "day": "Sunday",
+        "hours": "Open 24 hours",
+        "isOpen": true
+      },
+      {
+        "day": "Monday",
+        "hours": "Open 24 hours",
+        "isOpen": true
+      },
+      {
+        "day": "Tuesday",
+        "hours": "Open 24 hours",
+        "isOpen": true
+      },
+      {
+        "day": "Wednesday",
+        "hours": "Open 24 hours",
+        "isOpen": true
+      },
+      {
+        "day": "Thursday",
+        "hours": "Open 24 hours",
+        "isOpen": true
+      },
+      {
+        "day": "Friday",
+        "hours": "Open 24 hours",
+        "isOpen": true
+      },
+      {
+        "day": "Saturday",
+        "hours": "Open 24 hours",
+        "isOpen": true
+      }
+    ]
+  },
+  {
+    "precinctNum": 83,
+    "name": "New York City Police Department - 83rd Precinct",
+    "address": "480 Knickerbocker Ave, Brooklyn, NY 11237",
+    "phone": "(718) 574-1605",
+    "borough": "Brooklyn",
+    "latitude": 40.6983251,
+    "longitude": -73.91786929999999,
+    "openingHours": [
+      {
+        "day": "Sunday",
+        "hours": "Open 24 hours",
+        "isOpen": true
+      },
+      {
+        "day": "Monday",
+        "hours": "Open 24 hours",
+        "isOpen": true
+      },
+      {
+        "day": "Tuesday",
+        "hours": "Open 24 hours",
+        "isOpen": true
+      },
+      {
+        "day": "Wednesday",
+        "hours": "Open 24 hours",
+        "isOpen": true
+      },
+      {
+        "day": "Thursday",
+        "hours": "Open 24 hours",
+        "isOpen": true
+      },
+      {
+        "day": "Friday",
+        "hours": "Open 24 hours",
+        "isOpen": true
+      },
+      {
+        "day": "Saturday",
+        "hours": "Open 24 hours",
+        "isOpen": true
+      }
+    ]
+  },
+  {
+    "precinctNum": 84,
+    "name": "New York City Police Department - 84th Precinct",
+    "address": "301 Gold St, Brooklyn, NY 11201",
+    "phone": "(718) 875-6811",
+    "borough": "Brooklyn",
+    "latitude": 40.6955481,
+    "longitude": -73.98291689999999,
+    "openingHours": [
+      {
+        "day": "Sunday",
+        "hours": "Open 24 hours",
+        "isOpen": true
+      },
+      {
+        "day": "Monday",
+        "hours": "Open 24 hours",
+        "isOpen": true
+      },
+      {
+        "day": "Tuesday",
+        "hours": "Open 24 hours",
+        "isOpen": true
+      },
+      {
+        "day": "Wednesday",
+        "hours": "Open 24 hours",
+        "isOpen": true
+      },
+      {
+        "day": "Thursday",
+        "hours": "Open 24 hours",
+        "isOpen": true
+      },
+      {
+        "day": "Friday",
+        "hours": "Open 24 hours",
+        "isOpen": true
+      },
+      {
+        "day": "Saturday",
+        "hours": "Open 24 hours",
+        "isOpen": true
+      }
+    ]
+  },
+  {
+    "precinctNum": 88,
+    "name": "New York City Police Department - 88th Precinct",
+    "address": "298 Classon Ave, Brooklyn, NY 11205",
+    "phone": "(718) 636-6511",
+    "borough": "Brooklyn",
+    "latitude": 40.69022409999999,
+    "longitude": -73.96044549999999,
+    "openingHours": [
+      {
+        "day": "Sunday",
+        "hours": "7:00 AM – 3:00 PM",
+        "isOpen": true
+      },
+      {
+        "day": "Monday",
+        "hours": "7:00 AM – 3:00 PM",
+        "isOpen": true
+      },
+      {
+        "day": "Tuesday",
+        "hours": "7:00 AM – 3:00 PM",
+        "isOpen": true
+      },
+      {
+        "day": "Wednesday",
+        "hours": "7:00 AM – 3:00 PM",
+        "isOpen": true
+      },
+      {
+        "day": "Thursday",
+        "hours": "7:00 AM – 3:00 PM",
+        "isOpen": true
+      },
+      {
+        "day": "Friday",
+        "hours": "7:00 AM – 3:00 PM",
+        "isOpen": true
+      },
+      {
+        "day": "Saturday",
+        "hours": "7:00 AM – 3:00 PM",
+        "isOpen": true
+      }
+    ]
+  },
+  {
+    "precinctNum": 90,
+    "name": "New York City Police Department - 90th Precinct",
+    "address": "211 Union Ave, Brooklyn, NY 11211",
+    "phone": "(718) 963-5311",
+    "borough": "Brooklyn",
+    "latitude": 40.7063386,
+    "longitude": -73.9505624,
+    "openingHours": [
+      {
+        "day": "Sunday",
+        "hours": "Open 24 hours",
+        "isOpen": true
+      },
+      {
+        "day": "Monday",
+        "hours": "Open 24 hours",
+        "isOpen": true
+      },
+      {
+        "day": "Tuesday",
+        "hours": "Open 24 hours",
+        "isOpen": true
+      },
+      {
+        "day": "Wednesday",
+        "hours": "Open 24 hours",
+        "isOpen": true
+      },
+      {
+        "day": "Thursday",
+        "hours": "Open 24 hours",
+        "isOpen": true
+      },
+      {
+        "day": "Friday",
+        "hours": "Open 24 hours",
+        "isOpen": true
+      },
+      {
+        "day": "Saturday",
+        "hours": "Open 24 hours",
+        "isOpen": true
+      }
+    ]
+  },
+  {
+    "precinctNum": 94,
+    "name": "New York City Police Department 94th Precinct",
+    "address": "100 Meserole Ave, Brooklyn, NY 11222",
+    "phone": "(718) 383-3879",
+    "borough": "Brooklyn",
+    "latitude": 40.7268072,
+    "longitude": -73.95327999999999,
+    "openingHours": [
+      {
+        "day": "Sunday",
+        "hours": "Open 24 hours",
+        "isOpen": true
+      },
+      {
+        "day": "Monday",
+        "hours": "Open 24 hours",
+        "isOpen": true
+      },
+      {
+        "day": "Tuesday",
+        "hours": "Open 24 hours",
+        "isOpen": true
+      },
+      {
+        "day": "Wednesday",
+        "hours": "Open 24 hours",
+        "isOpen": true
+      },
+      {
+        "day": "Thursday",
+        "hours": "Open 24 hours",
+        "isOpen": true
+      },
+      {
+        "day": "Friday",
+        "hours": "Open 24 hours",
+        "isOpen": true
+      },
+      {
+        "day": "Saturday",
+        "hours": "Open 24 hours",
+        "isOpen": true
+      }
+    ]
+  },
+  {
+    "precinctNum": 100,
+    "name": "New York Police Department - 100th Precinct",
+    "address": "92-24 Rockaway Beach Blvd, Rockaway Beach, NY 11693",
+    "phone": "(718) 318-4200",
+    "borough": "Queens",
+    "latitude": 40.58618209999999,
+    "longitude": -73.8164357,
+    "openingHours": [
+      {
+        "day": "Sunday",
+        "hours": "Open 24 hours",
+        "isOpen": true
+      },
+      {
+        "day": "Monday",
+        "hours": "Open 24 hours",
+        "isOpen": true
+      },
+      {
+        "day": "Tuesday",
+        "hours": "Open 24 hours",
+        "isOpen": true
+      },
+      {
+        "day": "Wednesday",
+        "hours": "Open 24 hours",
+        "isOpen": true
+      },
+      {
+        "day": "Thursday",
+        "hours": "Open 24 hours",
+        "isOpen": true
+      },
+      {
+        "day": "Friday",
+        "hours": "Open 24 hours",
+        "isOpen": true
+      },
+      {
+        "day": "Saturday",
+        "hours": "Open 24 hours",
+        "isOpen": true
+      }
+    ]
+  },
+  {
+    "precinctNum": 101,
+    "name": "New York City Police Department - 101st Precinct",
+    "address": "16-12 Mott Ave, Far Rockaway, NY 11691",
+    "phone": "(718) 868-3400",
+    "borough": "Queens",
+    "latitude": 40.6028584,
+    "longitude": -73.7501009,
+    "openingHours": [
+      {
+        "day": "Sunday",
+        "hours": "Open 24 hours",
+        "isOpen": true
+      },
+      {
+        "day": "Monday",
+        "hours": "Open 24 hours",
+        "isOpen": true
+      },
+      {
+        "day": "Tuesday",
+        "hours": "Open 24 hours",
+        "isOpen": true
+      },
+      {
+        "day": "Wednesday",
+        "hours": "Open 24 hours",
+        "isOpen": true
+      },
+      {
+        "day": "Thursday",
+        "hours": "Open 24 hours",
+        "isOpen": true
+      },
+      {
+        "day": "Friday",
+        "hours": "Open 24 hours",
+        "isOpen": true
+      },
+      {
+        "day": "Saturday",
+        "hours": "Open 24 hours",
+        "isOpen": true
+      }
+    ]
+  },
+  {
+    "precinctNum": 102,
+    "name": "New York City Police Department - 102nd Precinct",
+    "address": "87-34 118th St, Richmond Hill, NY 11418",
+    "phone": "(718) 805-3200",
+    "borough": "Queens",
+    "latitude": 40.6987641,
+    "longitude": -73.8314194,
+    "openingHours": [
+      {
+        "day": "Sunday",
+        "hours": "Open 24 hours",
+        "isOpen": true
+      },
+      {
+        "day": "Monday",
+        "hours": "Open 24 hours",
+        "isOpen": true
+      },
+      {
+        "day": "Tuesday",
+        "hours": "Open 24 hours",
+        "isOpen": true
+      },
+      {
+        "day": "Wednesday",
+        "hours": "Open 24 hours",
+        "isOpen": true
+      },
+      {
+        "day": "Thursday",
+        "hours": "Open 24 hours",
+        "isOpen": true
+      },
+      {
+        "day": "Friday",
+        "hours": "Open 24 hours",
+        "isOpen": true
+      },
+      {
+        "day": "Saturday",
+        "hours": "Open 24 hours",
+        "isOpen": true
+      }
+    ]
+  },
+  {
+    "precinctNum": 103,
+    "name": "103rd Precinct",
+    "address": "168-02 91st Ave, Jamaica, NY 11432",
+    "phone": "(718) 657-8181",
+    "borough": "Queens",
+    "latitude": 40.7070802,
+    "longitude": -73.79262080000001,
+    "openingHours": [
+      {
+        "day": "Sunday",
+        "hours": "Open 24 hours",
+        "isOpen": true
+      },
+      {
+        "day": "Monday",
+        "hours": "Open 24 hours",
+        "isOpen": true
+      },
+      {
+        "day": "Tuesday",
+        "hours": "Open 24 hours",
+        "isOpen": true
+      },
+      {
+        "day": "Wednesday",
+        "hours": "Open 24 hours",
+        "isOpen": true
+      },
+      {
+        "day": "Thursday",
+        "hours": "Open 24 hours",
+        "isOpen": true
+      },
+      {
+        "day": "Friday",
+        "hours": "Open 24 hours",
+        "isOpen": true
+      },
+      {
+        "day": "Saturday",
+        "hours": "Open 24 hours",
+        "isOpen": true
+      }
+    ]
+  },
+  {
+    "precinctNum": 104,
+    "name": "New York City Police Department - 104th Precinct",
+    "address": "64-02 Catalpa Ave, Ridgewood, NY 11385",
+    "phone": "(718) 386-3004",
+    "borough": "Queens",
+    "latitude": 40.7043706,
+    "longitude": -73.8936635,
+    "openingHours": [
+      {
+        "day": "Sunday",
+        "hours": "Open 24 hours",
+        "isOpen": true
+      },
+      {
+        "day": "Monday",
+        "hours": "Open 24 hours",
+        "isOpen": true
+      },
+      {
+        "day": "Tuesday",
+        "hours": "Open 24 hours",
+        "isOpen": true
+      },
+      {
+        "day": "Wednesday",
+        "hours": "Open 24 hours",
+        "isOpen": true
+      },
+      {
+        "day": "Thursday",
+        "hours": "Open 24 hours",
+        "isOpen": true
+      },
+      {
+        "day": "Friday",
+        "hours": "Open 24 hours",
+        "isOpen": true
+      },
+      {
+        "day": "Saturday",
+        "hours": "Open 24 hours",
+        "isOpen": true
+      }
+    ]
+  },
+  {
+    "precinctNum": 105,
+    "name": "New York City Police Department - 105th Precinct",
+    "address": "92-08 222nd St, Queens Village, NY 11428",
+    "phone": "(718) 776-9090",
+    "borough": "Queens",
+    "latitude": 40.7262295,
+    "longitude": -73.7350249,
+    "openingHours": [
+      {
+        "day": "Sunday",
+        "hours": "Closed",
+        "isOpen": false
+      },
+      {
+        "day": "Monday",
+        "hours": "Open 24 hours",
+        "isOpen": true
+      },
+      {
+        "day": "Tuesday",
+        "hours": "Open 24 hours",
+        "isOpen": true
+      },
+      {
+        "day": "Wednesday",
+        "hours": "Open 24 hours",
+        "isOpen": true
+      },
+      {
+        "day": "Thursday",
+        "hours": "Open 24 hours",
+        "isOpen": true
+      },
+      {
+        "day": "Friday",
+        "hours": "Open 24 hours",
+        "isOpen": true
+      },
+      {
+        "day": "Saturday",
+        "hours": "Closed",
+        "isOpen": false
+      }
+    ]
+  },
+  {
+    "precinctNum": 106,
+    "name": "New York City Police Department - 106th Precinct",
+    "address": "103-53 101st St, South Ozone Park, NY 11417",
+    "phone": "(718) 845-2211",
+    "borough": "Queens",
+    "latitude": 40.6821986,
+    "longitude": -73.83987809999999,
+    "openingHours": [
+      {
+        "day": "Sunday",
+        "hours": "Open 24 hours",
+        "isOpen": true
+      },
+      {
+        "day": "Monday",
+        "hours": "Open 24 hours",
+        "isOpen": true
+      },
+      {
+        "day": "Tuesday",
+        "hours": "Open 24 hours",
+        "isOpen": true
+      },
+      {
+        "day": "Wednesday",
+        "hours": "Open 24 hours",
+        "isOpen": true
+      },
+      {
+        "day": "Thursday",
+        "hours": "Open 24 hours",
+        "isOpen": true
+      },
+      {
+        "day": "Friday",
+        "hours": "Open 24 hours",
+        "isOpen": true
+      },
+      {
+        "day": "Saturday",
+        "hours": "Open 24 hours",
+        "isOpen": true
+      }
+    ]
+  },
+  {
+    "precinctNum": 107,
+    "name": "New York Police Department - 107th Precinct",
+    "address": "71-01 Parsons Blvd, Fresh Meadows, NY 11365",
+    "phone": "(718) 969-5100",
+    "borough": "Queens",
+    "latitude": 40.7300429,
+    "longitude": -73.81059929999999,
+    "openingHours": [
+      {
+        "day": "Sunday",
+        "hours": "Open 24 hours",
+        "isOpen": true
+      },
+      {
+        "day": "Monday",
+        "hours": "Open 24 hours",
+        "isOpen": true
+      },
+      {
+        "day": "Tuesday",
+        "hours": "Open 24 hours",
+        "isOpen": true
+      },
+      {
+        "day": "Wednesday",
+        "hours": "Open 24 hours",
+        "isOpen": true
+      },
+      {
+        "day": "Thursday",
+        "hours": "Open 24 hours",
+        "isOpen": true
+      },
+      {
+        "day": "Friday",
+        "hours": "Open 24 hours",
+        "isOpen": true
+      },
+      {
+        "day": "Saturday",
+        "hours": "Open 24 hours",
+        "isOpen": true
+      }
+    ]
+  },
+  {
+    "precinctNum": 108,
+    "name": "New York Police Department - 108th Precinct",
+    "address": "5-47 50th Ave, Long Island City, NY 11101",
+    "phone": "(718) 784-5411",
+    "borough": "Queens",
+    "latitude": 40.7429449,
+    "longitude": -73.9547083,
+    "openingHours": [
+      {
+        "day": "Sunday",
+        "hours": "Open 24 hours",
+        "isOpen": true
+      },
+      {
+        "day": "Monday",
+        "hours": "Open 24 hours",
+        "isOpen": true
+      },
+      {
+        "day": "Tuesday",
+        "hours": "Open 24 hours",
+        "isOpen": true
+      },
+      {
+        "day": "Wednesday",
+        "hours": "Open 24 hours",
+        "isOpen": true
+      },
+      {
+        "day": "Thursday",
+        "hours": "Open 24 hours",
+        "isOpen": true
+      },
+      {
+        "day": "Friday",
+        "hours": "Open 24 hours",
+        "isOpen": true
+      },
+      {
+        "day": "Saturday",
+        "hours": "Open 24 hours",
+        "isOpen": true
+      }
+    ]
+  },
+  {
+    "precinctNum": 109,
+    "name": "New York City Police Department - 109th Precinct",
+    "address": "37-05 Union St, Flushing, NY 11354",
+    "phone": "(718) 321-2250",
+    "borough": "Queens",
+    "latitude": 40.7622975,
+    "longitude": -73.8272795,
+    "openingHours": [
+      {
+        "day": "Sunday",
+        "hours": "Open 24 hours",
+        "isOpen": true
+      },
+      {
+        "day": "Monday",
+        "hours": "Open 24 hours",
+        "isOpen": true
+      },
+      {
+        "day": "Tuesday",
+        "hours": "Open 24 hours",
+        "isOpen": true
+      },
+      {
+        "day": "Wednesday",
+        "hours": "Open 24 hours",
+        "isOpen": true
+      },
+      {
+        "day": "Thursday",
+        "hours": "Open 24 hours",
+        "isOpen": true
+      },
+      {
+        "day": "Friday",
+        "hours": "Open 24 hours",
+        "isOpen": true
+      },
+      {
+        "day": "Saturday",
+        "hours": "Open 24 hours",
+        "isOpen": true
+      }
+    ]
+  },
+  {
+    "precinctNum": 110,
+    "name": "New York City Police Department - 110th Precinct",
+    "address": "94-41 43rd Ave, Elmhurst, NY 11373",
+    "phone": "(718) 476-9311",
+    "borough": "Queens",
+    "latitude": 40.7451856,
+    "longitude": -73.8700546,
+    "openingHours": [
+      {
+        "day": "Sunday",
+        "hours": "Open 24 hours",
+        "isOpen": true
+      },
+      {
+        "day": "Monday",
+        "hours": "Open 24 hours",
+        "isOpen": true
+      },
+      {
+        "day": "Tuesday",
+        "hours": "Open 24 hours",
+        "isOpen": true
+      },
+      {
+        "day": "Wednesday",
+        "hours": "Open 24 hours",
+        "isOpen": true
+      },
+      {
+        "day": "Thursday",
+        "hours": "Open 24 hours",
+        "isOpen": true
+      },
+      {
+        "day": "Friday",
+        "hours": "Open 24 hours",
+        "isOpen": true
+      },
+      {
+        "day": "Saturday",
+        "hours": "Open 24 hours",
+        "isOpen": true
+      }
+    ]
+  },
+  {
+    "precinctNum": 111,
+    "name": "New York Police Department - 111th Precinct",
+    "address": "45-06 215th St, Bayside, NY 11361",
+    "phone": "(718) 279-5200",
+    "borough": "Queens",
+    "latitude": 40.7602732,
+    "longitude": -73.7675878,
+    "openingHours": [
+      {
+        "day": "Sunday",
+        "hours": "Open 24 hours",
+        "isOpen": true
+      },
+      {
+        "day": "Monday",
+        "hours": "Open 24 hours",
+        "isOpen": true
+      },
+      {
+        "day": "Tuesday",
+        "hours": "Open 24 hours",
+        "isOpen": true
+      },
+      {
+        "day": "Wednesday",
+        "hours": "Open 24 hours",
+        "isOpen": true
+      },
+      {
+        "day": "Thursday",
+        "hours": "Open 24 hours",
+        "isOpen": true
+      },
+      {
+        "day": "Friday",
+        "hours": "Open 24 hours",
+        "isOpen": true
+      },
+      {
+        "day": "Saturday",
+        "hours": "Open 24 hours",
+        "isOpen": true
+      }
+    ]
+  },
+  {
+    "precinctNum": 112,
+    "name": "New York Police Department - 112 Precinct",
+    "address": "68-40 Austin St, Forest Hills, NY 11375",
+    "phone": "(718) 520-9311",
+    "borough": "Queens",
+    "latitude": 40.722358,
+    "longitude": -73.851468,
+    "openingHours": [
+      {
+        "day": "Sunday",
+        "hours": "Open 24 hours",
+        "isOpen": true
+      },
+      {
+        "day": "Monday",
+        "hours": "Open 24 hours",
+        "isOpen": true
+      },
+      {
+        "day": "Tuesday",
+        "hours": "Open 24 hours",
+        "isOpen": true
+      },
+      {
+        "day": "Wednesday",
+        "hours": "Open 24 hours",
+        "isOpen": true
+      },
+      {
+        "day": "Thursday",
+        "hours": "Open 24 hours",
+        "isOpen": true
+      },
+      {
+        "day": "Friday",
+        "hours": "Open 24 hours",
+        "isOpen": true
+      },
+      {
+        "day": "Saturday",
+        "hours": "Open 24 hours",
+        "isOpen": true
+      }
+    ]
+  },
+  {
+    "precinctNum": 113,
+    "name": "New York Police Department - 113th Precinct",
+    "address": "167-02 Baisley Blvd, Jamaica, NY 11434",
+    "phone": "(718) 712-7733",
+    "borough": "Queens",
+    "latitude": 40.6799508,
+    "longitude": -73.77583229999999,
+    "openingHours": [
+      {
+        "day": "Sunday",
+        "hours": "Open 24 hours",
+        "isOpen": true
+      },
+      {
+        "day": "Monday",
+        "hours": "Open 24 hours",
+        "isOpen": true
+      },
+      {
+        "day": "Tuesday",
+        "hours": "Open 24 hours",
+        "isOpen": true
+      },
+      {
+        "day": "Wednesday",
+        "hours": "Open 24 hours",
+        "isOpen": true
+      },
+      {
+        "day": "Thursday",
+        "hours": "Open 24 hours",
+        "isOpen": true
+      },
+      {
+        "day": "Friday",
+        "hours": "Open 24 hours",
+        "isOpen": true
+      },
+      {
+        "day": "Saturday",
+        "hours": "Open 24 hours",
+        "isOpen": true
+      }
+    ]
+  },
+  {
+    "precinctNum": 114,
+    "name": "New York Police Department - 114th Precinct",
+    "address": "34-16 Astoria Blvd S, Astoria, NY 11103",
+    "phone": "(718) 626-9311",
+    "borough": "Queens",
+    "latitude": 40.7694295,
+    "longitude": -73.91524299999999,
+    "openingHours": [
+      {
+        "day": "Sunday",
+        "hours": "Open 24 hours",
+        "isOpen": true
+      },
+      {
+        "day": "Monday",
+        "hours": "Open 24 hours",
+        "isOpen": true
+      },
+      {
+        "day": "Tuesday",
+        "hours": "Open 24 hours",
+        "isOpen": true
+      },
+      {
+        "day": "Wednesday",
+        "hours": "Open 24 hours",
+        "isOpen": true
+      },
+      {
+        "day": "Thursday",
+        "hours": "Open 24 hours",
+        "isOpen": true
+      },
+      {
+        "day": "Friday",
+        "hours": "Open 24 hours",
+        "isOpen": true
+      },
+      {
+        "day": "Saturday",
+        "hours": "Open 24 hours",
+        "isOpen": true
+      }
+    ]
+  },
+  {
+    "precinctNum": 115,
+    "name": "New York City Police Department - 115th Precinct",
+    "address": "92-15 Northern Blvd, Jackson Heights, NY 11372",
+    "phone": "(718) 533-2002",
+    "borough": "Queens",
+    "latitude": 40.7567595,
+    "longitude": -73.8754878,
+    "openingHours": [
+      {
+        "day": "Sunday",
+        "hours": "Open 24 hours",
+        "isOpen": true
+      },
+      {
+        "day": "Monday",
+        "hours": "Open 24 hours",
+        "isOpen": true
+      },
+      {
+        "day": "Tuesday",
+        "hours": "Open 24 hours",
+        "isOpen": true
+      },
+      {
+        "day": "Wednesday",
+        "hours": "Open 24 hours",
+        "isOpen": true
+      },
+      {
+        "day": "Thursday",
+        "hours": "Open 24 hours",
+        "isOpen": true
+      },
+      {
+        "day": "Friday",
+        "hours": "Open 24 hours",
+        "isOpen": true
+      },
+      {
+        "day": "Saturday",
+        "hours": "Open 24 hours",
+        "isOpen": true
+      }
+    ]
+  },
+  {
+    "precinctNum": 116,
+    "name": "NYPD 116th Police Precinct",
+    "address": "244-04 N Conduit Ave, Jamaica, NY 11422",
+    "phone": "(718) 610-4500",
+    "borough": "Queens",
+    "latitude": 40.6663135,
+    "longitude": -73.733914,
+    "openingHours": [
+      {
+        "day": "Sunday",
+        "hours": "Open 24 hours",
+        "isOpen": true
+      },
+      {
+        "day": "Monday",
+        "hours": "Open 24 hours",
+        "isOpen": true
+      },
+      {
+        "day": "Tuesday",
+        "hours": "Open 24 hours",
+        "isOpen": true
+      },
+      {
+        "day": "Wednesday",
+        "hours": "Open 24 hours",
+        "isOpen": true
+      },
+      {
+        "day": "Thursday",
+        "hours": "Open 24 hours",
+        "isOpen": true
+      },
+      {
+        "day": "Friday",
+        "hours": "Open 24 hours",
+        "isOpen": true
+      },
+      {
+        "day": "Saturday",
+        "hours": "Open 24 hours",
+        "isOpen": true
+      }
+    ]
+  },
+  {
+    "precinctNum": 120,
+    "name": "New York Police Department - 120th Precinct",
+    "address": "78 Richmond Ter, Staten Island, NY 10301",
+    "phone": "(718) 876-8500",
+    "borough": "Staten Island",
+    "latitude": 40.6447418,
+    "longitude": -74.0773739,
+    "openingHours": [
+      {
+        "day": "Sunday",
+        "hours": "Open 24 hours",
+        "isOpen": true
+      },
+      {
+        "day": "Monday",
+        "hours": "Open 24 hours",
+        "isOpen": true
+      },
+      {
+        "day": "Tuesday",
+        "hours": "Open 24 hours",
+        "isOpen": true
+      },
+      {
+        "day": "Wednesday",
+        "hours": "Open 24 hours",
+        "isOpen": true
+      },
+      {
+        "day": "Thursday",
+        "hours": "Open 24 hours",
+        "isOpen": true
+      },
+      {
+        "day": "Friday",
+        "hours": "Open 24 hours",
+        "isOpen": true
+      },
+      {
+        "day": "Saturday",
+        "hours": "Open 24 hours",
+        "isOpen": true
+      }
+    ]
+  },
+  {
+    "precinctNum": 121,
+    "name": "New York City Police Department - 121st Precinct",
+    "address": "970 Richmond Ave, Staten Island, NY 10314",
+    "phone": "(718) 697-8700",
+    "borough": "Staten Island",
+    "latitude": 40.62363939999999,
+    "longitude": -74.1507462,
+    "openingHours": [
+      {
+        "day": "Sunday",
+        "hours": "12:00 AM – 11:30 PM",
+        "isOpen": true
+      },
+      {
+        "day": "Monday",
+        "hours": "12:00 AM – 11:30 PM",
+        "isOpen": true
+      },
+      {
+        "day": "Tuesday",
+        "hours": "12:00 AM – 11:30 PM",
+        "isOpen": true
+      },
+      {
+        "day": "Wednesday",
+        "hours": "12:00 AM – 11:30 PM",
+        "isOpen": true
+      },
+      {
+        "day": "Thursday",
+        "hours": "12:00 AM – 11:30 PM",
+        "isOpen": true
+      },
+      {
+        "day": "Friday",
+        "hours": "12:00 AM – 11:30 PM",
+        "isOpen": true
+      },
+      {
+        "day": "Saturday",
+        "hours": "12:00 AM – 11:30 PM",
+        "isOpen": true
+      }
+    ]
+  },
+  {
+    "precinctNum": 122,
+    "name": "New York City Police Department - 122nd Precinct",
+    "address": "2320 Hylan Blvd # 2, Staten Island, NY 10306",
+    "phone": "(718) 667-2211",
+    "borough": "Staten Island",
+    "latitude": 40.5741852,
+    "longitude": -74.1056682,
+    "openingHours": [
+      {
+        "day": "Sunday",
+        "hours": "Open 24 hours",
+        "isOpen": true
+      },
+      {
+        "day": "Monday",
+        "hours": "Open 24 hours",
+        "isOpen": true
+      },
+      {
+        "day": "Tuesday",
+        "hours": "Open 24 hours",
+        "isOpen": true
+      },
+      {
+        "day": "Wednesday",
+        "hours": "Open 24 hours",
+        "isOpen": true
+      },
+      {
+        "day": "Thursday",
+        "hours": "Open 24 hours",
+        "isOpen": true
+      },
+      {
+        "day": "Friday",
+        "hours": "Open 24 hours",
+        "isOpen": true
+      },
+      {
+        "day": "Saturday",
+        "hours": "Open 24 hours",
+        "isOpen": true
+      }
+    ]
+  }
+]

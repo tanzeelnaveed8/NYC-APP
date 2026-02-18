@@ -3,8 +3,8 @@ import { insertLawCategory, insertLawEntry, updateCategoryCount, getLawStats } f
 import { insertSquad, insertRdoSchedule } from '../db/repositories/calendarRepository';
 import { setDataVersion, getDataVersion, isInitialLoadComplete } from '../db/repositories/syncRepository';
 import { resetDatabase, getDatabase } from '../db/database';
-import { fetchPrecinctDetailsFromGoogle } from './nycApi';
 import type { Precinct, LawCategory, Squad, RdoSchedule, Borough } from '../models';
+import PRECINCT_DATA from '../data/precinctData.json';
 
 export type LoadProgress = {
   stage: string;
@@ -36,16 +36,16 @@ export async function performInitialDataLoad(
     await seedLawLibrary();
     await setDataVersion('laws', '1.0.0');
 
-    onProgress?.({ stage: 'Fetching precinct data from Google Maps...', progress: 0.30 });
-    await seedPrecinctDataFromGoogle(onProgress);
+    onProgress?.({ stage: 'Loading precinct data...', progress: 0.30 });
+    await seedPrecinctData(onProgress);
 
     // Verify precincts loaded
     const db = await getDatabase();
     const count = await db.getFirstAsync<{ cnt: number }>('SELECT COUNT(*) as cnt FROM precincts');
     if (!count || count.cnt === 0) {
-      throw new Error('Google Maps API did not return any precinct data. Check your internet connection and API key.');
+      throw new Error('Failed to load precinct data.');
     }
-    console.log(`[DataLoader] Loaded ${count.cnt} precincts from Google Maps`);
+    console.log(`[DataLoader] Loaded ${count.cnt} precincts`);
 
     await setDataVersion('precincts', PRECINCT_VERSION);
 
@@ -66,17 +66,17 @@ async function upgradePrecinctsIfNeeded(
   try {
     const precinctVer = await getDataVersion('precincts');
     if (!precinctVer || precinctVer.version < PRECINCT_VERSION) {
-      onProgress?.({ stage: 'Updating precinct data from Google Maps...', progress: 0.2 });
+      onProgress?.({ stage: 'Updating precinct data...', progress: 0.2 });
       const db = await getDatabase();
       await db.runAsync('DELETE FROM sectors');
       await db.runAsync('DELETE FROM precincts');
 
-      await seedPrecinctDataFromGoogle(onProgress);
+      await seedPrecinctData(onProgress);
 
       // Verify precincts were actually loaded
       const count = await db.getFirstAsync<{ cnt: number }>('SELECT COUNT(*) as cnt FROM precincts');
       if (!count || count.cnt === 0) {
-        throw new Error('No precincts loaded from Google Maps API');
+        throw new Error('No precincts loaded');
       }
 
       await setDataVersion('precincts', PRECINCT_VERSION);
@@ -190,8 +190,7 @@ async function seedLawLibrary(): Promise<void> {
 }
 
 /**
- * Force refresh precinct data from Google Maps (includes opening hours).
- * Can be called from UI to re-fetch without clearing the entire DB.
+ * Force refresh precinct data from bundled JSON.
  */
 export async function refreshPrecinctData(
   onProgress?: (p: LoadProgress) => void
@@ -201,34 +200,26 @@ export async function refreshPrecinctData(
   await db.runAsync('DELETE FROM sectors');
   await db.runAsync('DELETE FROM precincts');
 
-  await seedPrecinctDataFromGoogle(onProgress);
-
-  const count = await db.getFirstAsync<{ cnt: number }>('SELECT COUNT(*) as cnt FROM precincts');
-  if (!count || count.cnt === 0) {
-    throw new Error('No precincts loaded from Google Maps API');
-  }
+  await seedPrecinctData(onProgress);
 
   await setDataVersion('precincts', PRECINCT_VERSION);
   onProgress?.({ stage: 'Complete!', progress: 1.0 });
 }
 
-// ─── Precinct Data from Google Maps API ──────────────────────────────────────
+// ─── Precinct Data from Bundled JSON ─────────────────────────────────────────
 
-async function seedPrecinctDataFromGoogle(
+async function seedPrecinctData(
   onProgress?: (p: LoadProgress) => void
 ): Promise<void> {
-  onProgress?.({ stage: 'Fetching precinct details from Google Maps...', progress: 0.40 });
-  const googleData = await fetchPrecinctDetailsFromGoogle();
+  onProgress?.({ stage: 'Saving precinct data...', progress: 0.50 });
 
-  onProgress?.({ stage: 'Saving precinct data...', progress: 0.75 });
-
-  for (const [precinctNum, info] of googleData) {
+  for (const info of PRECINCT_DATA) {
     const precinct: Precinct = {
-      precinctNum,
-      name: info.name || fallbackName(precinctNum),
+      precinctNum: info.precinctNum,
+      name: info.name || fallbackName(info.precinctNum),
       address: info.address || '',
       phone: info.phone || '',
-      borough: info.borough || fallbackBorough(precinctNum),
+      borough: (info.borough as Borough) || fallbackBorough(info.precinctNum),
       boundaryJson: '{}',
       centroidLat: info.latitude,
       centroidLng: info.longitude,
