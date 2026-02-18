@@ -49,31 +49,22 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
   const isDark =
     darkMode === 'dark' || (darkMode === 'system' && systemColorScheme === 'dark');
 
-  // Load preferences on mount
   useEffect(() => {
     (async () => {
       try {
         const loaded = await isInitialLoadComplete();
         if (loaded) {
-          // Verify data is actually there
           const stats = await getLawStats();
           if (stats.categories > 0 && stats.entries > 0) {
             setIsDataLoaded(true);
-            const prefs = await getAllPreferences();
-            setDarkMode(prefs.dark_mode as DarkMode);
-            setMapType(prefs.map_type as MapType);
-            setBoundaryVisible(prefs.boundary_visible === 'true');
-          } else {
-            // DB is broken, need to reload
-            // Data incomplete, forcing reload
-            setIsDataLoaded(false);
           }
-        } else {
-          setIsDataLoaded(false);
         }
+        const prefs = await getAllPreferences();
+        setDarkMode(prefs.dark_mode as DarkMode);
+        setMapType(prefs.map_type as MapType);
+        setBoundaryVisible(prefs.boundary_visible === 'true');
       } catch (error) {
-        console.error('Failed to load preferences:', error);
-        setIsDataLoaded(false);
+        console.warn('Failed to load preferences:', error);
       }
     })();
   }, []);
